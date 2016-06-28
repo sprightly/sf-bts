@@ -1,4 +1,4 @@
-bts
+Bug Tracking System
 ===
 
-A Symfony project created on June 27, 2016, 11:32 am.
+Bug Tracking System implemented with help of Symfony.
