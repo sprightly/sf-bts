@@ -1,0 +1,60 @@
+<?php
+namespace AppBundle\DataFixtures\ORM;
+
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use AppBundle\Entity\User;
+
+class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
+{
+    public function load(ObjectManager $manager)
+    {
+        $userAdmin = new User();
+        $userAdmin->setUsername('admin');
+        $userAdmin->setPassword('test');
+        $userAdmin->setFullName('Admin Full Name');
+        $userAdmin->setEmail('admin@example.com');
+        $userAdmin->setRoles(array(User::ADMIN_ROLE));
+        $manager->persist($userAdmin);
+
+        $userManager = new User();
+        $userManager->setUsername('manager');
+        $userManager->setPassword('test');
+        $userManager->setFullName('Manager Full Name');
+        $userManager->setEmail('manager@example.com');
+        $userManager->setRoles(array(User::MANAGER_ROLE));
+        $manager->persist($userManager);
+
+        $userOperator = new User();
+        $userOperator->setUsername('operator');
+        $userOperator->setPassword('test');
+        $userOperator->setFullName('Operator Full Name');
+        $userOperator->setEmail('operator@example.com');
+        $userOperator->setRoles(array(User::OPERATOR_ROLE));
+        $manager->persist($userOperator);
+
+        $userUsual = new User();
+        $userUsual->setUsername('usual');
+        $userUsual->setPassword('test');
+        $userUsual->setFullName('Usual Full Name');
+        $userUsual->setEmail('usual@example.com');
+        $userUsual->setRoles(array(User::USER_ROLE));
+        $manager->persist($userUsual);
+
+        $manager->flush();
+
+        $this->addReference('admin-user', $userAdmin);
+        $this->addReference('manager-user', $userAdmin);
+        $this->addReference('operator-user', $userAdmin);
+        $this->addReference('usual-user', $userAdmin);
+    }
+
+    /**
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return 1;
+    }
+}

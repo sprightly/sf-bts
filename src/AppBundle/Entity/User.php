@@ -13,6 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
+    const ADMIN_ROLE = 'admin';
+    const MANAGER_ROLE = 'manager';
+    const OPERATOR_ROLE = 'operator';
+    const USER_ROLE = 'user';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

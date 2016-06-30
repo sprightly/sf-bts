@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="issue")
  * @package AppBundle\Entity
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class Issue
 {
@@ -57,21 +58,21 @@ class Issue
     private $status;
 
     /**
-     * @ORM\Column(type="enum_issue_resolution")
+     * @ORM\Column(type="enum_issue_resolution", nullable=true)
      * @var string
      */
     private $resolution;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="reporter_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="reporter_id", referencedColumnName="id", onDelete="CASCADE")
      * @var User
      */
     private $reporter;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="assignee_id", referencedColumnName="id", onDelete="CASCADE")
      * @var User
      */
     private $assignee;
@@ -97,7 +98,7 @@ class Issue
 
     /**
      * @ORM\ManyToOne(targetEntity="Project")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      * @var Project
      */
     private $project;

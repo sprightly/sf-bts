@@ -32,21 +32,21 @@ class IssueActivity
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      * @var User
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Issue")
-     * @ORM\JoinColumn(name="issue_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="issue_id", referencedColumnName="id", onDelete="CASCADE")
      * @var Issue
      */
     private $issue;
 
     /**
      * @ORM\ManyToOne(targetEntity="Project")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      * @var Project
      */
     private $project;
