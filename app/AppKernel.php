@@ -3,6 +3,7 @@
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+// @codingStandardsIgnoreStart
 class AppKernel extends Kernel
 {
     public function registerBundles()
@@ -33,4 +34,11 @@ class AppKernel extends Kernel
     {
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
     }
+
+    public function __construct($environment, $debug)
+    {
+        date_default_timezone_set('UTC');
+        parent::__construct($environment, $debug);
+    }
 }
+// @codingStandardsIgnoreEnd

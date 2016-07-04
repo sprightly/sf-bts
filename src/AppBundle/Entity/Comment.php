@@ -21,7 +21,7 @@ class Comment
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      * @var User
      */
@@ -40,7 +40,7 @@ class Comment
     private $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Issue")
+     * @ORM\ManyToOne(targetEntity="Issue", inversedBy="comments")
      * @ORM\JoinColumn(name="issue_id", referencedColumnName="id", onDelete="CASCADE")
      * @var Issue
      */

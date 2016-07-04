@@ -12,31 +12,31 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
     {
         $userAdmin = new User();
         $userAdmin->setUsername('admin');
-        $userAdmin->setPassword('test');
+        $userAdmin->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $userAdmin->setFullName('Admin Full Name');
         $userAdmin->setEmail('admin@example.com');
-        $userAdmin->setRoles(array(User::ADMIN_ROLE));
+        $userAdmin->setRoles(array(User::USER_ROLE, User::ADMIN_ROLE));
         $manager->persist($userAdmin);
 
         $userManager = new User();
         $userManager->setUsername('manager');
-        $userManager->setPassword('test');
+        $userManager->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $userManager->setFullName('Manager Full Name');
         $userManager->setEmail('manager@example.com');
-        $userManager->setRoles(array(User::MANAGER_ROLE));
+        $userManager->setRoles(array(User::USER_ROLE, User::MANAGER_ROLE));
         $manager->persist($userManager);
 
         $userOperator = new User();
         $userOperator->setUsername('operator');
-        $userOperator->setPassword('test');
+        $userOperator->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $userOperator->setFullName('Operator Full Name');
         $userOperator->setEmail('operator@example.com');
-        $userOperator->setRoles(array(User::OPERATOR_ROLE));
+        $userOperator->setRoles(array(User::USER_ROLE, User::OPERATOR_ROLE));
         $manager->persist($userOperator);
 
         $userUsual = new User();
         $userUsual->setUsername('usual');
-        $userUsual->setPassword('test');
+        $userUsual->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $userUsual->setFullName('Usual Full Name');
         $userUsual->setEmail('usual@example.com');
         $userUsual->setRoles(array(User::USER_ROLE));
