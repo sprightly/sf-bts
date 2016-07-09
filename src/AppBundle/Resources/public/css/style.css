@@ -37,3 +37,7 @@ body.login input[type="password"] {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+body.login .login-error {
+    max-width: 330px;
+    margin: 0 auto;
+}
