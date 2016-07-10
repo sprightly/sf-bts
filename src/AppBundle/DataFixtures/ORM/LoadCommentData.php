@@ -12,7 +12,7 @@ class LoadCommentData extends AbstractFixture implements OrderedFixtureInterface
     {
         $firstComment = new Comment();
         $firstComment->setBody('Hello world!');
-        $firstComment->setCreated(new \DateTime('now'));
+        $firstComment->setCreated(new \DateTime('2016-07-01 18:11:31'));
         $firstComment->setAuthor($this->getReference('usual-user'));
         $firstComment->setIssue($this->getReference('first-issue'));
         $manager->persist($firstComment);

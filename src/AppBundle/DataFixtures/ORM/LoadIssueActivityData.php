@@ -13,15 +13,17 @@ class LoadIssueActivityData extends AbstractFixture implements OrderedFixtureInt
         $firstActivity = new IssueActivity();
         $firstActivity->setIssue($this->getReference('first-issue'));
         $firstActivity->setProject($this->getReference('first-project'));
-        $firstActivity->setType(IssueActivity::TYPE_COMMENT);
+        $firstActivity->setType(IssueActivity::TYPE_CREATED);
         $firstActivity->setUser($this->getReference('usual-user'));
+        $firstActivity->setCreated(new \DateTime('2016-07-01 10:11:31'));
         $manager->persist($firstActivity);
 
         $secondActivity = new IssueActivity();
         $secondActivity->setIssue($this->getReference('first-issue'));
         $secondActivity->setProject($this->getReference('first-project'));
-        $secondActivity->setType(IssueActivity::TYPE_CREATED);
+        $secondActivity->setType(IssueActivity::TYPE_COMMENT);
         $secondActivity->setUser($this->getReference('usual-user'));
+        $secondActivity->setCreated(new \DateTime('2016-07-01 18:11:31'));
         $manager->persist($secondActivity);
 
         $manager->flush();

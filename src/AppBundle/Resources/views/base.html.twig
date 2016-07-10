@@ -15,8 +15,8 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li class="{% if app.request.attributes.get('_route') == 'main_page' %}active{% endif %}"><a href="{{ path('main_page') }}">{% trans %}Main{% endtrans %}</a></li>
+                        <li class="{% if app.request.attributes.get('_route') == 'private_profile' %}active{% endif %}"><a href="{{ path('private_profile') }}">{% trans %}Profile{% endtrans %}</a></li>
                         <li><a href="{{ path('main_page') }}logout">{% trans %}Logout{% endtrans %}</a></li>
-
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>

@@ -1,0 +1,41 @@
+{% macro acitivityBlock(context) %}
+    {% import _self as macros %}
+    <div class="row block">
+        <div class="page-header">
+            <h4>{{ context.blockTitle }}</h4>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>{% trans %}Date{% endtrans %}</th>
+                <th>{% trans %}Project{% endtrans %}</th>
+                <th>{% trans %}Issue{% endtrans %}</th>
+                <th>{% trans %}Type{% endtrans %}</th>
+                <th>{% trans %}User{% endtrans %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entity in context.entities %}
+                {% set entityType = entity.type %}
+                <tr>
+                    <td>{{ entity.created|date_time_time_zone('Y.m.d h:m:s') }}</td>
+                    <td>{{ entity.project.label }}</td>
+                    <td>{{ entity.issue.summary }}</td>
+                    <td>{% trans %}%entityType%{% endtrans %}</td>
+                    <td>{{ macros.public_profile_anchor(entity.user.username) }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">
+                        {% trans %}Nothing here yet..{% endtrans %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
+{% macro public_profile_anchor(username) %}
+    <a href="{{ path('public_profile', {'username':username}) }}">{{ username }}</a>
+{% endmacro %}

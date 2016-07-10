@@ -13,9 +13,46 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        // replace this example code with whatever you need
-        return $this->render('AppBundle:default:index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
-        ));
+        $systemActivity = new \stdClass();
+        $systemActivity->blockTitle = $this->get('translator')->trans('System activity');
+        $systemActivity->entities = $this->getDoctrine()
+            ->getRepository('AppBundle:IssueActivity')
+            ->findAll();
+
+        return $this->render(
+            'AppBundle:default:index.html.twig',
+            array(
+                'systemActivity' => $systemActivity,
+            )
+        );
+    }
+
+    /**
+     * @Route("/profile", name="private_profile")
+     */
+    public function profileAction()
+    {
+        $user = $this->getUser();
+        return $this->render(
+            'AppBundle:default:public_profile.html.twig',
+            array(
+                'username' => $user->getUsername()
+            )
+        );
+    }
+
+    /**
+     * @Route("/profile/{username}", name="public_profile")
+     * @internal param $username
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function publicProfileAction($username)
+    {
+        return $this->render(
+            'AppBundle:default:public_profile.html.twig',
+            array(
+                'username' => $username
+            )
+        );
     }
 }

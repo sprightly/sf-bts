@@ -27,8 +27,8 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $firstIssue->setType(Issue::TYPE_TASK);
         $firstIssue->setStatus(IssueStatusType::OPEN);
         $firstIssue->setPriority(IssuePriorityType::MAJOR);
-        $firstIssue->setUpdated(new \DateTime('now'));
-        $firstIssue->setCreated(new \DateTime('now'));
+        $firstIssue->setUpdated(new \DateTime('2016-07-01 15:11:31'));
+        $firstIssue->setCreated(new \DateTime('2016-07-01 10:11:31'));
         $firstIssue->setAssignee($this->getReference('usual-user'));
         $firstIssue->setReporter($this->getReference('operator-user'));
         $firstIssue->setProject($this->getReference('first-project'));
@@ -48,8 +48,8 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $storyIssue->setType(Issue::TYPE_STORY);
         $storyIssue->setStatus(IssueStatusType::OPEN);
         $storyIssue->setPriority(IssuePriorityType::MAJOR);
-        $storyIssue->setUpdated(new \DateTime('now'));
-        $storyIssue->setCreated(new \DateTime('now'));
+        $storyIssue->setUpdated(new \DateTime('2016-07-01 22:11:31'));
+        $storyIssue->setCreated(new \DateTime('2016-07-01 19:11:31'));
         $storyIssue->setAssignee($this->getReference('usual-user'));
         $storyIssue->setReporter($this->getReference('operator-user'));
         $storyIssue->setProject($this->getReference('first-project'));
@@ -69,8 +69,8 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $openSubTask->setType(Issue::TYPE_SUBTASK);
         $openSubTask->setStatus(IssueStatusType::OPEN);
         $openSubTask->setPriority(IssuePriorityType::MAJOR);
-        $openSubTask->setUpdated(new \DateTime('now'));
-        $openSubTask->setCreated(new \DateTime('now'));
+        $openSubTask->setUpdated(new \DateTime('2016-07-03 19:11:31'));
+        $openSubTask->setCreated(new \DateTime('2016-07-01 18:15:31'));
         $openSubTask->setAssignee($this->getReference('usual-user'));
         $openSubTask->setReporter($this->getReference('operator-user'));
         $openSubTask->setProject($this->getReference('first-project'));
@@ -91,8 +91,8 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $closedSubTask->setType(Issue::TYPE_SUBTASK);
         $closedSubTask->setStatus(IssueStatusType::CLOSED);
         $closedSubTask->setPriority(IssuePriorityType::MAJOR);
-        $closedSubTask->setUpdated(new \DateTime('now'));
-        $closedSubTask->setCreated(new \DateTime('now'));
+        $closedSubTask->setUpdated(new \DateTime('2016-07-05 10:11:31'));
+        $closedSubTask->setCreated(new \DateTime('2016-07-04 12:11:31'));
         $closedSubTask->setAssignee($this->getReference('usual-user'));
         $closedSubTask->setReporter($this->getReference('operator-user'));
         $closedSubTask->setProject($this->getReference('first-project'));

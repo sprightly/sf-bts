@@ -70,7 +70,7 @@ class User implements UserInterface, \Serializable
     private $issues;
 
     /**
-     * @ORM\Column(type="string", length=15, nullable=true)
+     * @ORM\Column(type="string", length=30, nullable=true)
      * @var string
      */
     private $timezone;

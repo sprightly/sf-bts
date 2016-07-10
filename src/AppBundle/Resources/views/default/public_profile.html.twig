@@ -1,14 +1,12 @@
 {% extends 'AppBundle::base.html.twig' %}
 
-{% import 'AppBundle::macros.html.twig' as macros %}
-
 {% block title %}
     {{ parent() }}
     {% trans %}
-    &nbsp;-&nbsp; Main
+    &nbsp;-&nbsp;Public Profile
     {% endtrans %}
 {% endblock %}
 
 {% block content %}
-    {{ macros.acitivityBlock(systemActivity) }}
+    {{ username }}
 {% endblock %}
