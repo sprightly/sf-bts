@@ -1,0 +1,17 @@
+Main: Main
+Profile: Profile
+Logout: Logout
+Date: Date
+Project: Project
+Issue: Issue
+Type: Type
+User: User
+'%entityType%': %entityType%
+'Nothing here yet..': '__Nothing here yet..'
+Username: Username
+Password: Password
+'Log in': 'Log in'
+'&nbsp;-&nbsp;Public Profile': '&nbsp;-&nbsp;Public Profile'
+'&nbsp;-&nbsp;Private Profile': '&nbsp;-&nbsp;Private Profile'
+'&nbsp;-&nbsp; Main': '&nbsp;-&nbsp; Main'
+System activity: 'System activity'
