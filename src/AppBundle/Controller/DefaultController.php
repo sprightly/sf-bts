@@ -55,4 +55,22 @@ class DefaultController extends Controller
             )
         );
     }
+
+    /**
+     * @Route("/login", name="login")
+     */
+    public function loginAction()
+    {
+        $authUtils = $this->get('security.authentication_utils');
+        $lastError = $authUtils->getLastAuthenticationError();
+        $lastUsername = $authUtils->getLastUsername();
+
+        return $this->render(
+            'AppBundle:security:login.html.twig',
+            array(
+                'last_username' => $lastUsername,
+                'last_error' => $lastError,
+            )
+        );
+    }
 }

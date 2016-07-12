@@ -3,25 +3,26 @@
 namespace AppBundle\Tests\Entity;
 
 use AppBundle\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class UserTest extends WebTestCase
+class UserTest extends \PHPUnit_Framework_TestCase
 {
     /**@var User $user */
     protected $user;
 
-    public function setup()
+    public function setUp()
     {
-        $client = static::createClient();
-        $container = $client->getContainer();
-        /** @noinspection PhpUndefinedMethodInspection */
-        $this->user = $container->get('doctrine')
-            ->getRepository('AppBundle:User')->findOneByUsername('admin');
+        $this->user = new User;
+        $this->user->setUsername('operator');
+        $this->user->setPassword(password_hash('test', PASSWORD_BCRYPT));
+        $this->user->setFullName('Operator Full Name');
+        $this->user->setEmail('operator@example.com');
+        $this->user->setTimezone('America/Yellowknife');
+        $this->user->setRoles(array(User::USER_ROLE, User::OPERATOR_ROLE));
     }
 
     public function testGetId()
     {
-        $userId = $this->user->getId();
-        $this->assertTrue(is_int($userId));
+        $userEmail = $this->user->getEmail();
+        $this->assertRegExp('/^[^@[:space:]]+@[^@[:space:]]+$/', $userEmail);
     }
 }

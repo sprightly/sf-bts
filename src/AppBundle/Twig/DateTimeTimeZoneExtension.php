@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Twig;
 
-use Symfony\Component\DependencyInjection\Tests\ProjectServiceContainer;
+use Symfony\Component\DependencyInjection\Container;
 
 class DateTimeTimeZoneExtension extends \Twig_Extension
 {
@@ -9,9 +9,9 @@ class DateTimeTimeZoneExtension extends \Twig_Extension
 
     /**
      * DateTimeTimeZoneExtension constructor.
-     * @param $container ProjectServiceContainer
+     * @param $container Container
      */
-    public function __construct($container)
+    public function __construct(Container $container)
     {
         $this->userTimeZone = $container->get('session')->get('timezone');
     }
