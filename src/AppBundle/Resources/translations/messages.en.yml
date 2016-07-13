@@ -6,8 +6,8 @@ Project: Project
 Issue: Issue
 Type: Type
 User: User
-'%entityType%': %entityType%
-'Nothing here yet..': '__Nothing here yet..'
+'%entityType%': '%entityType%'
+'Nothing here yet..': 'Nothing here yet..'
 Username: Username
 Password: Password
 'Log in': 'Log in'
@@ -15,3 +15,28 @@ Password: Password
 '&nbsp;-&nbsp;Private Profile': '&nbsp;-&nbsp;Private Profile'
 '&nbsp;-&nbsp; Main': '&nbsp;-&nbsp; Main'
 System activity: 'System activity'
+Issues: 'Issues'
+update: 'Update'
+summary: 'Summary'
+priority: 'Priority'
+type: 'Type'
+status: 'Status'
+assignee: 'Assignee'
+reporter: 'Reporter'
+story: 'story'
+subtask: 'subtask'
+task: 'task'
+bug: 'bug'
+blocker: 'blocker'
+major: 'major'
+critical: 'critical'
+minor: 'minor'
+trivial: 'trivial'
+open: 'open'
+'in progress': 'in progress'
+closed: 'closed'
+fixed: 'fixed'
+'wont fix': 'wont fix'
+'cannot reproduce': 'cannot reproduce'
+done: 'done'
+'wont done': 'wont done'

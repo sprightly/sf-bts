@@ -11,6 +11,10 @@ use AppBundle\Entity\Issue;
 
 class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
 {
+    /**
+     * @param ObjectManager $manager
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
     public function load(ObjectManager $manager)
     {
         $firstIssue = new Issue();
@@ -32,6 +36,10 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $firstIssue->setAssignee($this->getReference('usual-user'));
         $firstIssue->setReporter($this->getReference('operator-user'));
         $firstIssue->setProject($this->getReference('first-project'));
+        /** @noinspection PhpParamsInspection */
+        $firstIssue->addCollaborator($this->getReference('usual-user'));
+        /** @noinspection PhpParamsInspection */
+        $firstIssue->addCollaborator($this->getReference('operator-user'));
         $manager->persist($firstIssue);
 
         $storyIssue = new Issue();
@@ -53,6 +61,10 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $storyIssue->setAssignee($this->getReference('usual-user'));
         $storyIssue->setReporter($this->getReference('operator-user'));
         $storyIssue->setProject($this->getReference('first-project'));
+        /** @noinspection PhpParamsInspection */
+        $storyIssue->addCollaborator($this->getReference('usual-user'));
+        /** @noinspection PhpParamsInspection */
+        $storyIssue->addCollaborator($this->getReference('operator-user'));
         $manager->persist($storyIssue);
 
         $openSubTask = new Issue();
@@ -74,6 +86,10 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $openSubTask->setAssignee($this->getReference('usual-user'));
         $openSubTask->setReporter($this->getReference('operator-user'));
         $openSubTask->setProject($this->getReference('first-project'));
+        /** @noinspection PhpParamsInspection */
+        $openSubTask->addCollaborator($this->getReference('usual-user'));
+        /** @noinspection PhpParamsInspection */
+        $openSubTask->addCollaborator($this->getReference('operator-user'));
         $openSubTask->setParent($storyIssue);
         $manager->persist($openSubTask);
 
@@ -96,13 +112,43 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $closedSubTask->setAssignee($this->getReference('usual-user'));
         $closedSubTask->setReporter($this->getReference('operator-user'));
         $closedSubTask->setProject($this->getReference('first-project'));
+        /** @noinspection PhpParamsInspection */
+        $closedSubTask->addCollaborator($this->getReference('usual-user'));
+        /** @noinspection PhpParamsInspection */
+        $closedSubTask->addCollaborator($this->getReference('operator-user'));
         $closedSubTask->setParent($storyIssue);
         $closedSubTask->setResolution(IssueResolutionType::FIXED);
         $manager->persist($closedSubTask);
 
+        $firstIssueInSecondProject = new Issue();
+        $firstIssueInSecondProject->setSummary('First issue in second project..');
+        $firstIssueInSecondProject->setDescription(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
+            faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 
+            primis in faucibus orci luctus et ultrices posuere cubilia Curae; In mollis nunc sed ante lacinia ultricies 
+            in quis tellus. Suspendisse vulputate, nisl efficitur faucibus posuere, augue lacus ornare est, nec 
+            interdum mauris neque ut arcu. Nunc dolor sapien, elementum ac ultrices id, accumsan id sapien. 
+            Duis sed suscipit nulla, in ullamcorper lectus. Pellentesque quis turpis ligula. 
+        '
+        );
+        $firstIssueInSecondProject->setType(Issue::TYPE_TASK);
+        $firstIssueInSecondProject->setStatus(IssueStatusType::OPEN);
+        $firstIssueInSecondProject->setPriority(IssuePriorityType::MAJOR);
+        $firstIssueInSecondProject->setUpdated(new \DateTime('2016-07-01 15:11:31'));
+        $firstIssueInSecondProject->setCreated(new \DateTime('2016-07-01 10:11:31'));
+        $firstIssueInSecondProject->setAssignee($this->getReference('usual-user'));
+        $firstIssueInSecondProject->setReporter($this->getReference('operator-user'));
+        $firstIssueInSecondProject->setProject($this->getReference('second-project'));
+        /** @noinspection PhpParamsInspection */
+        $firstIssueInSecondProject->addCollaborator($this->getReference('usual-user'));
+        /** @noinspection PhpParamsInspection */
+        $firstIssueInSecondProject->addCollaborator($this->getReference('operator-user'));
+        $manager->persist($firstIssueInSecondProject);
+        
         $manager->flush();
 
         $this->addReference('first-issue', $firstIssue);
+        $this->addReference('first-issue-in-second-project', $firstIssueInSecondProject);
     }
 
     /**

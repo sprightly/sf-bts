@@ -13,16 +13,29 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $systemActivity = new \stdClass();
-        $systemActivity->blockTitle = $this->get('translator')->trans('System activity');
-        $systemActivity->entities = $this->getDoctrine()
-            ->getRepository('AppBundle:IssueActivity')
-            ->findAll();
+        $visibleForUserActivity = new \stdClass();
+        $visibleForUserActivity->blockTitle = $this->get('translator')->trans('System activity');
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $visibleForUserActivity->entities = $this->getDoctrine()
+                ->getRepository('AppBundle:IssueActivity')
+                ->findAll();
+        } else {
+            $visibleForUserActivity->entities = $this->getDoctrine()
+                ->getRepository('AppBundle:IssueActivity')
+                ->findAllVisibleForCurrentUser($this->getUser());
+        }
+
+        $usersIssues = new \stdClass();
+        $usersIssues->blockTitle = $this->get('translator')->trans('Issues');
+        $usersIssues->entities = $this->getDoctrine()
+            ->getRepository('AppBundle:Issue')
+            ->findAllUsersIssues($this->getUser());
 
         return $this->render(
             'AppBundle:default:index.html.twig',
             array(
-                'systemActivity' => $systemActivity,
+                'visibleForUserActivity' => $visibleForUserActivity,
+                'usersIssues' => $usersIssues
             )
         );
     }
@@ -33,10 +46,11 @@ class DefaultController extends Controller
     public function profileAction()
     {
         $user = $this->getUser();
+
         return $this->render(
             'AppBundle:default:public_profile.html.twig',
             array(
-                'username' => $user->getUsername()
+                'username' => $user->getUsername(),
             )
         );
     }
@@ -51,7 +65,7 @@ class DefaultController extends Controller
         return $this->render(
             'AppBundle:default:public_profile.html.twig',
             array(
-                'username' => $username
+                'username' => $username,
             )
         );
     }

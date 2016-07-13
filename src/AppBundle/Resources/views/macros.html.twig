@@ -36,6 +36,52 @@
     </div>
 {% endmacro %}
 
+{% macro issuesBlock(context) %}
+    {% import _self as macros %}
+    <div class="row block">
+        <div class="page-header">
+            <h4>{{ context.blockTitle }}</h4>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>{{ 'update'|trans }}</th>
+                <th>{{ 'summary'|trans }}</th>
+                <th>{{ 'Project'|trans }}</th>
+                <th>{{ 'priority'|trans }}</th>
+                <th>{{ 'type'|trans }}</th>
+                <th>{{ 'status'|trans }}</th>
+                <th>{{ 'assignee'|trans }}</th>
+                <th>{{ 'reporter'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entity in context.entities %}
+                {% set entityType = entity.type %}
+                {% set entityStatus = entity.status %}
+                {% set entityPriority = entity.priority %}
+                <tr>
+                    <td>{{ entity.updated|date_time_time_zone('Y.m.d h:m:s') }}</td>
+                    <td>{{ entity.summary }}</td>
+                    <td>{{ entity.project.label }}</td>
+                    <td>{{ entityPriority|trans }}</td>
+                    <td>{{ entityType|trans }}</td>
+                    <td>{{ entityStatus|trans }}</td>
+                    <td>{{ macros.public_profile_anchor(entity.assignee.username) }}</td>
+                    <td>{{ macros.public_profile_anchor(entity.reporter.username) }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">
+                        {% trans %}Nothing here yet..{% endtrans %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
 {% macro public_profile_anchor(username) %}
     <a href="{{ path('public_profile', {'username':username}) }}">{{ username }}</a>
 {% endmacro %}

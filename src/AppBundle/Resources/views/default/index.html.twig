@@ -10,5 +10,6 @@
 {% endblock %}
 
 {% block content %}
-    {{ macros.acitivityBlock(systemActivity) }}
+    {{ macros.acitivityBlock(visibleForUserActivity) }}
+    {{ macros.issuesBlock(usersIssues) }}
 {% endblock %}

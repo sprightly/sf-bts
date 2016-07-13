@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class IssueActivity
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\IssueActivityRepository")
  * @ORM\Table(name="issue_activity")
  * @package AppBundle\Entity
  */

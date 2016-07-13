@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class Issue
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\IssueRepository")
  * @ORM\Table(name="issue")
  * @package AppBundle\Entity
  * @SuppressWarnings(PHPMD.TooManyFields)

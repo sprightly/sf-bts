@@ -26,6 +26,14 @@ class LoadIssueActivityData extends AbstractFixture implements OrderedFixtureInt
         $secondActivity->setCreated(new \DateTime('2016-07-01 18:11:31'));
         $manager->persist($secondActivity);
 
+        $firstActivity = new IssueActivity();
+        $firstActivity->setIssue($this->getReference('first-issue-in-second-project'));
+        $firstActivity->setProject($this->getReference('second-project'));
+        $firstActivity->setType(IssueActivity::TYPE_CREATED);
+        $firstActivity->setUser($this->getReference('operator-user'));
+        $firstActivity->setCreated(new \DateTime('2016-07-01 16:11:31'));
+        $manager->persist($firstActivity);
+
         $manager->flush();
     }
 
