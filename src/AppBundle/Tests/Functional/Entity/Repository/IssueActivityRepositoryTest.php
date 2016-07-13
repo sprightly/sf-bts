@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Test\Functional\Entity\Repository;
+namespace AppBundle\Tests\Functional\Entity\Repository;
 
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

@@ -1,19 +1,17 @@
 <?php
 
-namespace AppBundle\Tests\Controller;
+namespace AppBundle\Tests\Functional\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndex()
+    public function testIndexAction()
     {
         $client = static::createClient();
 
         $client->request('GET', '/');
-        $crawler = $client->followRedirect();
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Bug Tracking System', $crawler->filter('head title')->text());
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
 }
