@@ -26,7 +26,13 @@ class Issue
      * @var int
      */
     private $id;
-
+    
+    /**
+     * @ORM\Column(type="string", unique=true)
+     * @var string
+     */
+    private $slug;
+    
     /**
      * @ORM\Column(type="text")
      * @var string
@@ -513,5 +519,28 @@ class Issue
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Project
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

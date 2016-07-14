@@ -1,0 +1,22 @@
+{% extends 'AppBundle::base.html.twig' %}
+{% import 'AppBundle::macros.html.twig' as macros %}
+
+{% block title %}
+    {{ parent() }}
+    {% trans %}&nbsp;-&nbsp;Project&nbsp;--&nbsp;{% endtrans %}
+    {% if entity %}
+        {{ entity.summary }}
+    {% else %}
+        {{ 'nothing here'|trans }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if entity %}
+        <h3>{{ entity.summary }}</h3>
+        <p>{{ entity.description }}</p>
+        {{ macros.acitivityBlock(activityBlock) }}
+    {% else %}
+        {{ 'nothing here'|trans }}
+    {% endif %}
+{% endblock %}

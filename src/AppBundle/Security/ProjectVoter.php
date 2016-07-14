@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ProjectVoter extends Voter
 {
     const VIEW = 'view';
-    const EDIT = 'edit';
 
     private $decisionManager;
 

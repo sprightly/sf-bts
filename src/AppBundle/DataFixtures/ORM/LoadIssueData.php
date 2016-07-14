@@ -19,6 +19,7 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
     {
         $firstIssue = new Issue();
         $firstIssue->setSummary('First issue..');
+        $firstIssue->setSlug('first-issue');
         $firstIssue->setDescription(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
             faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 
@@ -44,6 +45,7 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
 
         $storyIssue = new Issue();
         $storyIssue->setSummary('Story issue..');
+        $storyIssue->setSlug('story-issue');
         $storyIssue->setDescription(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
             faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 
@@ -69,6 +71,7 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
 
         $openSubTask = new Issue();
         $openSubTask->setSummary('Open sub-task..');
+        $openSubTask->setSlug('open-sub-task');
         $openSubTask->setDescription(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
             faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 
@@ -94,7 +97,8 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($openSubTask);
 
         $closedSubTask = new Issue();
-        $closedSubTask->setSummary('Open sub-task..');
+        $closedSubTask->setSummary('Closed sub-task..');
+        $closedSubTask->setSlug('closed-sub-task');
         $closedSubTask->setDescription(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
             faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 
@@ -122,6 +126,7 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
 
         $firstIssueInSecondProject = new Issue();
         $firstIssueInSecondProject->setSummary('First issue in second project..');
+        $firstIssueInSecondProject->setSlug('first-issue-in-second-project');
         $firstIssueInSecondProject->setDescription(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
             faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 

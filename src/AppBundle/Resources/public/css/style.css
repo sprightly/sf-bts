@@ -3,8 +3,12 @@ body {
     padding-bottom: 30px;
 }
 
-.single_project .jumbotron p {
+body .jumbotron p {
     font-size: 17px;
+}
+
+body .row.block.is-empty td {
+    border-top: none;
 }
 
 body.login {

@@ -1,29 +1,36 @@
 {% macro acitivityBlock(context) %}
     {% import _self as macros %}
-    <div class="row block">
+    {% if not context.entities %}
+        {% set empty_class = 'is-empty' %}
+    {% else %}
+        {% set empty_class = '' %}
+    {% endif %}
+    <div class="row block {{ empty_class }}">
         <div class="page-header">
             <h4>{{ context.blockTitle }}</h4>
         </div>
         <table class="table">
-            <thead>
-            <tr>
-                {% if not context.columns is defined or 'date' in context.columns %}
-                    <th>{% trans %}Date{% endtrans %}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'project' in context.columns %}
-                    <th>{% trans %}Project{% endtrans %}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'issue' in context.columns %}
-                    <th>{% trans %}Issue{% endtrans %}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'type' in context.columns %}
-                    <th>{% trans %}Type{% endtrans %}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'user' in context.columns %}
-                    <th>{% trans %}User{% endtrans %}</th>
-                {% endif %}
-            </tr>
-            </thead>
+            {% if context.entities %}
+                <thead>
+                <tr>
+                    {% if not context.columns is defined or 'date' in context.columns %}
+                        <th>{% trans %}Date{% endtrans %}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'project' in context.columns %}
+                        <th>{% trans %}Project{% endtrans %}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'issue' in context.columns %}
+                        <th>{% trans %}Issue{% endtrans %}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'type' in context.columns %}
+                        <th>{% trans %}Type{% endtrans %}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'user' in context.columns %}
+                        <th>{% trans %}User{% endtrans %}</th>
+                    {% endif %}
+                </tr>
+                </thead>
+            {% endif %}
             <tbody>
             {% for entity in context.entities %}
                 {% set entityType = entity.type %}
@@ -35,7 +42,7 @@
                         <td>{{ macros.project_anchor(entity.project) }}</td>
                     {% endif %}
                     {% if not context.columns is defined or 'issue' in context.columns %}
-                        <td>{{ entity.issue.summary }}</td>
+                        <td>{{ macros.issue_anchor(entity.issue) }}</td>
                     {% endif %}
                     {% if not context.columns is defined or 'type' in context.columns %}
                         <td>{% trans %}%entityType%{% endtrans %}</td>
@@ -58,39 +65,46 @@
 
 {% macro issuesBlock(context) %}
     {% import _self as macros %}
-    <div class="row block">
+    {% if not context.entities %}
+        {% set empty_class = 'is-empty' %}
+    {% else %}
+        {% set empty_class = '' %}
+    {% endif %}
+    <div class="row block {{ empty_class }}">
         <div class="page-header">
             <h4>{{ context.blockTitle }}</h4>
         </div>
         <table class="table">
-            <thead>
-            <tr>
-                {% if not context.columns is defined or 'update' in context.columns %}
-                    <th>{{ 'update'|trans }}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'summary' in context.columns %}
-                    <th>{{ 'summary'|trans }}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'project' in context.columns %}
-                    <th>{{ 'Project'|trans }}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'priority' in context.columns %}
-                    <th>{{ 'priority'|trans }}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'type' in context.columns %}
-                    <th>{{ 'type'|trans }}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'status' in context.columns %}
-                    <th>{{ 'status'|trans }}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'assignee' in context.columns %}
-                    <th>{{ 'assignee'|trans }}</th>
-                {% endif %}
-                {% if not context.columns is defined or 'reporter' in context.columns %}
-                    <th>{{ 'reporter'|trans }}</th>
-                {% endif %}
-            </tr>
-            </thead>
+            {% if context.entities %}
+                <thead>
+                <tr>
+                    {% if not context.columns is defined or 'update' in context.columns %}
+                        <th>{{ 'update'|trans }}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'summary' in context.columns %}
+                        <th>{{ 'summary'|trans }}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'project' in context.columns %}
+                        <th>{{ 'Project'|trans }}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'priority' in context.columns %}
+                        <th>{{ 'priority'|trans }}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'type' in context.columns %}
+                        <th>{{ 'type'|trans }}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'status' in context.columns %}
+                        <th>{{ 'status'|trans }}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'assignee' in context.columns %}
+                        <th>{{ 'assignee'|trans }}</th>
+                    {% endif %}
+                    {% if not context.columns is defined or 'reporter' in context.columns %}
+                        <th>{{ 'reporter'|trans }}</th>
+                    {% endif %}
+                </tr>
+                </thead>
+            {% endif %}
             <tbody>
             {% for entity in context.entities %}
                 <tr>
@@ -98,7 +112,7 @@
                         <td>{{ entity.updated|date_time_time_zone('Y.m.d h:m:s') }}</td>
                     {% endif %}
                     {% if not context.columns is defined or 'summary' in context.columns %}
-                        <td>{{ entity.summary }}</td>
+                        <td>{{ macros.issue_anchor(entity) }}</td>
                     {% endif %}
                     {% if not context.columns is defined or 'project' in context.columns %}
                         <td>{{ macros.project_anchor(entity.project) }}</td>
@@ -140,4 +154,8 @@
 
 {% macro project_anchor(project) %}
     <a href="{{ path('single_project', {'project_slug':project.slug}) }}">{{ project.label }}</a>
+{% endmacro %}
+
+{% macro issue_anchor(issue) %}
+    <a href="{{ path('single_issue', {'issue_slug':issue.slug}) }}">{{ issue.summary }}</a>
 {% endmacro %}

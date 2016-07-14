@@ -27,9 +27,15 @@ class DefaultController extends Controller
 
         $usersIssues = new \stdClass();
         $usersIssues->blockTitle = $this->get('translator')->trans('Issues');
-        $usersIssues->entities = $this->getDoctrine()
-            ->getRepository('AppBundle:Issue')
-            ->findAllUsersIssues($this->getUser());
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $usersIssues->entities = $this->getDoctrine()
+                ->getRepository('AppBundle:Issue')
+                ->findAll();
+        } else {
+            $usersIssues->entities = $this->getDoctrine()
+                ->getRepository('AppBundle:Issue')
+                ->findAllUsersIssues($this->getUser());
+        }
 
         return $this->render(
             'AppBundle:default:index.html.twig',
