@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class Project
@@ -41,9 +42,11 @@ class Project
 
     /**
      * @ORM\ManyToMany(targetEntity="User", inversedBy="projects")
-     * @var ArrayCollection User[]
+     * @ORM\JoinTable(name="projects_users")
+     * @var ArrayCollection|PersistentCollection
      */
     private $members;
+
     /**
      * Constructor
      */
@@ -134,11 +137,19 @@ class Project
     /**
      * Get members
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return PersistentCollection
      */
     public function getMembers()
     {
+        if (!$this->members->isInitialized()) {
+            $this->members->initialize();
+        }
         return $this->members;
+    }
+
+    public function isMember($user)
+    {
+        return $this->getMembers()->contains($user);
     }
 
     /**

@@ -19,6 +19,8 @@ class ProjectController extends Controller
         $project = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
             ->findOneBySlug($project_slug);
+         
+        $this->denyAccessUnlessGranted('view', $project);
 
         $activityBlock = new \stdClass();
         $activityBlock->columns = array(
