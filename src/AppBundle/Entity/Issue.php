@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class Issue
@@ -85,7 +86,8 @@ class Issue
 
     /**
      * @ORM\ManyToMany(targetEntity="User", inversedBy="issues")
-     * @var ArrayCollection User[]
+     * @ORM\JoinTable(name="issues_collaborators")
+     * @var PersistentCollection|ArrayCollection
      */
     private $collaborators;
 
@@ -126,6 +128,7 @@ class Issue
      * @var \DateTime
      */
     private $updated;
+
     /**
      * Constructor
      */
@@ -402,11 +405,17 @@ class Issue
     /**
      * Get collaborators
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return PersistentCollection
      */
     public function getCollaborators()
     {
-        return $this->collaborators;
+        /** @var PersistentCollection $collaborators */
+        $collaborators = $this->collaborators;
+
+        if (!$collaborators->isInitialized()) {
+            $collaborators->initialize();
+        }
+        return $collaborators;
     }
 
     /**

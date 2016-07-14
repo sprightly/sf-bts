@@ -148,6 +148,41 @@
     </div>
 {% endmacro %}
 
+{% macro usersBlock(context) %}
+    {% import _self as macros %}
+    <div class="row block">
+        <div class="page-header">
+            <h4>{{ context.blockTitle }}</h4>
+        </div>
+        <table class="table">
+            {% if context.entities %}
+                <thead>
+                <tr>
+                    <th>{{ 'username'|trans }}</th>
+                    <th>{{ 'email'|trans }}</th>
+                    <th>{{ 'full_name'|trans }}</th>
+                </tr>
+                </thead>
+            {% endif %}
+            <tbody>
+            {% for entity in context.entities %}
+                <tr>
+                    <td>{{ macros.public_profile_anchor(entity.username) }}</td>
+                    <td>{{ entity.email }}</td>
+                    <td>{{ entity.fullName }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">
+                        {% trans %}Nothing here yet..{% endtrans %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
 {% macro public_profile_anchor(username) %}
     <a href="{{ path('public_profile', {'username':username}) }}">{{ username }}</a>
 {% endmacro %}

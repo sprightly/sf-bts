@@ -21,6 +21,7 @@
             {{ macros.issue_anchor(parentTask) }}
         {% endif %}
         {{ macros.acitivityBlock(activityBlock) }}
+        {{ macros.usersBlock(collaboratorsBlock) }}
     {% else %}
         {{ 'nothing here'|trans }}
     {% endif %}

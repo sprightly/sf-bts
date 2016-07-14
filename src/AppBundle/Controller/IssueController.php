@@ -16,11 +16,14 @@ class IssueController extends Controller
      */
     public function showAction($issue_slug)
     {
+        $context = array();
+
         /** @noinspection PhpUndefinedMethodInspection */
         /** @var Issue $issue */
         $issue = $this->getDoctrine()
             ->getRepository('AppBundle:Issue')
             ->findOneBySlug($issue_slug);
+        $context['entity'] = $issue;
 
         $this->denyAccessUnlessGranted('view', $issue->getProject());
 
@@ -35,11 +38,13 @@ class IssueController extends Controller
         $activityBlock->entities = $this->getDoctrine()
             ->getRepository('AppBundle:IssueActivity')
             ->findByIssue($issue);
+        $context['activityBlock'] = $activityBlock;
 
-        $context = array(
-            'entity' => $issue,
-            'activityBlock' => $activityBlock,
-        );
+        $collaboratorsBlock = new \stdClass();
+        $collaboratorsBlock->blockTitle = $this->get('translator')->trans('Collaborators');
+        /** @noinspection PhpUndefinedMethodInspection */
+        $collaboratorsBlock->entities = $issue->getCollaborators();
+        $context['collaboratorsBlock'] = $collaboratorsBlock;
 
         if ($issue::TYPE_SUBTASK == $issue->getType()) {
             $context['parentTask'] = $issue->getParent();

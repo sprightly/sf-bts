@@ -141,10 +141,13 @@ class Project
      */
     public function getMembers()
     {
-        if (!$this->members->isInitialized()) {
-            $this->members->initialize();
+        /** @var PersistentCollection $members*/
+        $members = $this->members;
+
+        if (!$members->isInitialized()) {
+            $members->initialize();
         }
-        return $this->members;
+        return $members;
     }
 
     public function isMember($user)
