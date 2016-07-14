@@ -141,13 +141,9 @@ class LoadIssueData extends AbstractFixture implements OrderedFixtureInterface
         $firstIssueInSecondProject->setPriority(IssuePriorityType::MAJOR);
         $firstIssueInSecondProject->setUpdated(new \DateTime('2016-07-01 15:11:31'));
         $firstIssueInSecondProject->setCreated(new \DateTime('2016-07-01 10:11:31'));
-        $firstIssueInSecondProject->setAssignee($this->getReference('usual-user'));
-        $firstIssueInSecondProject->setReporter($this->getReference('operator-user'));
+        $firstIssueInSecondProject->setAssignee($this->getReference('admin-user'));
+        $firstIssueInSecondProject->setReporter($this->getReference('admin-user'));
         $firstIssueInSecondProject->setProject($this->getReference('second-project'));
-        /** @noinspection PhpParamsInspection */
-        $firstIssueInSecondProject->addCollaborator($this->getReference('usual-user'));
-        /** @noinspection PhpParamsInspection */
-        $firstIssueInSecondProject->addCollaborator($this->getReference('operator-user'));
         $manager->persist($firstIssueInSecondProject);
         
         $manager->flush();
