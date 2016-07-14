@@ -12,6 +12,7 @@ class LoadProjectData extends AbstractFixture implements OrderedFixtureInterface
     {
         $firstProject = new Project();
         $firstProject->setLabel('First sample project');
+        $firstProject->setSlug('first-sample-project');
         $firstProject->setSummary(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
             faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 
@@ -26,6 +27,7 @@ class LoadProjectData extends AbstractFixture implements OrderedFixtureInterface
 
         $secondProject = new Project();
         $secondProject->setLabel('Second sample project');
+        $secondProject->setSlug('second-sample-project');
         $secondProject->setSummary(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non sem volutpat, 
             faucibus elit id, dapibus ligula. Suspendisse vehicula quam non tincidunt ultricies. Vestibulum ante ipsum 

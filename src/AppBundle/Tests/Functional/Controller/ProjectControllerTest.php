@@ -2,16 +2,16 @@
 
 namespace AppBundle\Tests\Functional\Controller;
 
-class DefaultControllerTest extends WebTestCaseAbstract
+class ProjectControllerTest extends WebTestCaseAbstract
 {
-    public function testIndexAction()
+    public function testShowAction()
     {
         $this->logIn();
 
-        $crawler = $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/project/first-sample-project');
 
-        $this->assertContains('Main', $crawler->filter('head title')->text());
-        $this->assertContains('System activity', $crawler->filter('.row.block')->eq(0)->filter('h4')->text());
+        $this->assertContains('First sample project', $crawler->filter('h3')->text());
+        $this->assertContains('Activity', $crawler->filter('.row.block')->eq(0)->filter('h4')->text());
         $this->assertEquals(2, $crawler->filter('.row.block')->eq(0)->filter('tbody tr')->count());
         $this->assertContains('Issues', $crawler->filter('.row.block')->eq(1)->filter('h4')->text());
         $this->assertEquals(4, $crawler->filter('.row.block')->eq(1)->filter('tbody tr')->count());

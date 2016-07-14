@@ -16,7 +16,7 @@ class UserController extends Controller
         $user = $this->getUser();
 
         return $this->render(
-            'AppBundle:default:public_profile.html.twig',
+            'AppBundle:user:public_profile.html.twig',
             array(
                 'username' => $user->getUsername(),
             )
@@ -31,7 +31,7 @@ class UserController extends Controller
     public function publicProfileAction($username)
     {
         return $this->render(
-            'AppBundle:default:public_profile.html.twig',
+            'AppBundle:user:public_profile.html.twig',
             array(
                 'username' => $username,
             )

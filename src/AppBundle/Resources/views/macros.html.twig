@@ -7,22 +7,42 @@
         <table class="table">
             <thead>
             <tr>
-                <th>{% trans %}Date{% endtrans %}</th>
-                <th>{% trans %}Project{% endtrans %}</th>
-                <th>{% trans %}Issue{% endtrans %}</th>
-                <th>{% trans %}Type{% endtrans %}</th>
-                <th>{% trans %}User{% endtrans %}</th>
+                {% if not context.columns is defined or 'date' in context.columns %}
+                    <th>{% trans %}Date{% endtrans %}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'project' in context.columns %}
+                    <th>{% trans %}Project{% endtrans %}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'issue' in context.columns %}
+                    <th>{% trans %}Issue{% endtrans %}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'type' in context.columns %}
+                    <th>{% trans %}Type{% endtrans %}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'user' in context.columns %}
+                    <th>{% trans %}User{% endtrans %}</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
             {% for entity in context.entities %}
                 {% set entityType = entity.type %}
                 <tr>
-                    <td>{{ entity.created|date_time_time_zone('Y.m.d h:m:s') }}</td>
-                    <td>{{ entity.project.label }}</td>
-                    <td>{{ entity.issue.summary }}</td>
-                    <td>{% trans %}%entityType%{% endtrans %}</td>
-                    <td>{{ macros.public_profile_anchor(entity.user.username) }}</td>
+                    {% if not context.columns is defined or 'date' in context.columns %}
+                        <td>{{ entity.created|date_time_time_zone('Y.m.d h:m:s') }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'project' in context.columns %}
+                        <td>{{ macros.project_anchor(entity.project) }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'issue' in context.columns %}
+                        <td>{{ entity.issue.summary }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'type' in context.columns %}
+                        <td>{% trans %}%entityType%{% endtrans %}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'user' in context.columns %}
+                        <td>{{ macros.public_profile_anchor(entity.user.username) }}</td>
+                    {% endif %}
                 </tr>
             {% else %}
                 <tr>
@@ -45,30 +65,62 @@
         <table class="table">
             <thead>
             <tr>
-                <th>{{ 'update'|trans }}</th>
-                <th>{{ 'summary'|trans }}</th>
-                <th>{{ 'Project'|trans }}</th>
-                <th>{{ 'priority'|trans }}</th>
-                <th>{{ 'type'|trans }}</th>
-                <th>{{ 'status'|trans }}</th>
-                <th>{{ 'assignee'|trans }}</th>
-                <th>{{ 'reporter'|trans }}</th>
+                {% if not context.columns is defined or 'update' in context.columns %}
+                    <th>{{ 'update'|trans }}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'summary' in context.columns %}
+                    <th>{{ 'summary'|trans }}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'project' in context.columns %}
+                    <th>{{ 'Project'|trans }}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'priority' in context.columns %}
+                    <th>{{ 'priority'|trans }}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'type' in context.columns %}
+                    <th>{{ 'type'|trans }}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'status' in context.columns %}
+                    <th>{{ 'status'|trans }}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'assignee' in context.columns %}
+                    <th>{{ 'assignee'|trans }}</th>
+                {% endif %}
+                {% if not context.columns is defined or 'reporter' in context.columns %}
+                    <th>{{ 'reporter'|trans }}</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
             {% for entity in context.entities %}
-                {% set entityType = entity.type %}
-                {% set entityStatus = entity.status %}
-                {% set entityPriority = entity.priority %}
                 <tr>
-                    <td>{{ entity.updated|date_time_time_zone('Y.m.d h:m:s') }}</td>
-                    <td>{{ entity.summary }}</td>
-                    <td>{{ entity.project.label }}</td>
-                    <td>{{ entityPriority|trans }}</td>
-                    <td>{{ entityType|trans }}</td>
-                    <td>{{ entityStatus|trans }}</td>
-                    <td>{{ macros.public_profile_anchor(entity.assignee.username) }}</td>
-                    <td>{{ macros.public_profile_anchor(entity.reporter.username) }}</td>
+                    {% if not context.columns is defined or 'update' in context.columns %}
+                        <td>{{ entity.updated|date_time_time_zone('Y.m.d h:m:s') }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'summary' in context.columns %}
+                        <td>{{ entity.summary }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'project' in context.columns %}
+                        <td>{{ macros.project_anchor(entity.project) }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'priority' in context.columns %}
+                        {% set entityPriority = entity.priority %}
+                        <td>{{ entityPriority|trans }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'type' in context.columns %}
+                        {% set entityType = entity.type %}
+                        <td>{{ entityType|trans }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'status' in context.columns %}
+                        {% set entityStatus = entity.status %}
+                        <td>{{ entityStatus|trans }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'assignee' in context.columns %}
+                        <td>{{ macros.public_profile_anchor(entity.assignee.username) }}</td>
+                    {% endif %}
+                    {% if not context.columns is defined or 'reporter' in context.columns %}
+                        <td>{{ macros.public_profile_anchor(entity.reporter.username) }}</td>
+                    {% endif %}
                 </tr>
             {% else %}
                 <tr>
@@ -84,4 +136,8 @@
 
 {% macro public_profile_anchor(username) %}
     <a href="{{ path('public_profile', {'username':username}) }}">{{ username }}</a>
+{% endmacro %}
+
+{% macro project_anchor(project) %}
+    <a href="{{ path('single_project', {'project_slug':project.slug}) }}">{{ project.label }}</a>
 {% endmacro %}

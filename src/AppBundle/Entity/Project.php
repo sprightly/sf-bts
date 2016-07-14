@@ -22,6 +22,12 @@ class Project
     private $id;
 
     /**
+     * @ORM\Column(type="string", unique=true)
+     * @var string
+     */
+    private $slug;
+
+    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -133,5 +139,28 @@ class Project
     public function getMembers()
     {
         return $this->members;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Project
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

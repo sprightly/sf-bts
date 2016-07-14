@@ -3,6 +3,10 @@ body {
     padding-bottom: 30px;
 }
 
+.single_project .jumbotron p {
+    font-size: 17px;
+}
+
 body.login {
     padding-top: 40px;
     padding-bottom: 40px;
