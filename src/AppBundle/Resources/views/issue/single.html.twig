@@ -18,7 +18,13 @@
         {% if subTasksBlock is defined %}
             {{ macros.issuesBlock(subTasksBlock) }}
         {% elseif parentTask is defined %}
-            {{ macros.issue_anchor(parentTask) }}
+            <span class="label label-default">{{ 'story'|trans }}:&nbsp;{{ macros.issue_anchor(parentTask) }}</span>
+        {% endif %}
+        <span class="label label-default">{{ 'priority'|trans }}:&nbsp;<span>{{ entity.priority }}</span></span>
+        <span class="label label-default">{{ 'type'|trans }}:&nbsp;<span>{{ entity.type }}</span></span>
+        <span class="label label-default">{{ 'status'|trans }}:&nbsp;<span>{{ entity.status }}</span></span>
+        {% if entity.resolution %}
+            <span class="label label-default">{{ 'resolution'|trans }}:&nbsp;<span>{{ entity.resolution }}</span></span>
         {% endif %}
         {{ macros.acitivityBlock(activityBlock) }}
         {{ macros.usersBlock(collaboratorsBlock) }}
