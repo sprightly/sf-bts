@@ -15,6 +15,11 @@
     {% if entity %}
         <h3>{{ entity.summary }}</h3>
         <p>{{ entity.description }}</p>
+        {% if subTasksBlock is defined %}
+            {{ macros.issuesBlock(subTasksBlock) }}
+        {% elseif parentTask is defined %}
+            {{ macros.issue_anchor(parentTask) }}
+        {% endif %}
         {{ macros.acitivityBlock(activityBlock) }}
     {% else %}
         {{ 'nothing here'|trans }}
