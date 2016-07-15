@@ -183,6 +183,30 @@
     </div>
 {% endmacro %}
 
+{% macro comments_block(context) %}
+    {% import _self as macros %}
+    <div class="row block">
+        <div class="page-header">
+            <h4>{{ context.blockTitle }}</h4>
+        </div>
+        {% for entity in context.entities %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {{ entity.body }}
+                </div>
+                <div class="panel-footer">{{ entity.created|date_time_time_zone('Y.m.d h:m:s') }}, {{ macros.public_profile_anchor(entity.author.username) }}</div>
+            </div>
+        {% else %}
+            <div class="well">
+                <p>{% trans %}Nothing here yet..{% endtrans %}</p>
+            </div>
+        {% endfor %}
+        {{ form_start(context.form) }}
+        {{ form_widget(context.form) }}
+        {{ form_end(context.form) }}
+    </div>
+{% endmacro %}
+
 {% macro public_profile_anchor(username) %}
     <a href="{{ path('public_profile', {'username':username}) }}">{{ username }}</a>
 {% endmacro %}

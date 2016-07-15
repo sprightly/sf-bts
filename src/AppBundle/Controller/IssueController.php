@@ -2,10 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Comment;
 use AppBundle\Entity\Issue;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class IssueController extends Controller
 {
@@ -21,8 +24,9 @@ class IssueController extends Controller
         $this->denyAccessUnlessGranted('view', $context['entity']->getProject());
         $context['activityBlock'] = $this->generateActivityBlock($context['entity']);
         $context['collaboratorsBlock'] = $this->generateCollaboratorsBlock($context['entity']);
+        $context['commentsBlock'] = $this->generateCommentsBlock($context['entity']);
         $this->maybePopulateStorySubtaskContext($context, $context['entity']);
-        
+
         return $this->render(
             'AppBundle:issue:single.html.twig',
             $context
@@ -91,5 +95,27 @@ class IssueController extends Controller
                 'reporter',
             );
         }
+    }
+
+    private function generateCommentsBlock($issue)
+    {
+        $commentsBlock = new \stdClass();
+        $commentsBlock->blockTitle = $this->get('translator')->trans('Comments');
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $commentsBlock->entities = $this->getDoctrine()
+            ->getRepository('AppBundle:Comment')
+            ->findByIssue($issue);
+
+        $comment = new Comment();
+        $form = $this->createFormBuilder($comment)
+            ->add('body', null, array('label' => false, 'attr' => array('rows' => "7")))
+            ->add('author', HiddenType::class, array('attr' => array('value' => 'issue-id')))
+            ->add('issue', HiddenType::class, array('attr' => array('value' => 'issue-id')))
+            ->add('submit', SubmitType::class, array('label' => 'Post Comment'))
+            ->getForm();
+        $commentsBlock->form = $form->createView();
+
+        return $commentsBlock;
     }
 }
