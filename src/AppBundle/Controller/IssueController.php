@@ -17,16 +17,20 @@ class IssueController extends Controller
     public function showAction($issue_slug)
     {
         $context = array();
+        $context['entity'] = $this->getCurrentIssue($issue_slug);
+        $this->denyAccessUnlessGranted('view', $context['entity']->getProject());
+        $context['activityBlock'] = $this->generateActivityBlock($context['entity']);
+        $context['collaboratorsBlock'] = $this->generateCollaboratorsBlock($context['entity']);
+        $this->maybePopulateStorySubtaskContext($context, $context['entity']);
+        
+        return $this->render(
+            'AppBundle:issue:single.html.twig',
+            $context
+        );
+    }
 
-        /** @noinspection PhpUndefinedMethodInspection */
-        /** @var Issue $issue */
-        $issue = $this->getDoctrine()
-            ->getRepository('AppBundle:Issue')
-            ->findOneBySlug($issue_slug);
-        $context['entity'] = $issue;
-
-        $this->denyAccessUnlessGranted('view', $issue->getProject());
-
+    private function generateActivityBlock($issue)
+    {
         $activityBlock = new \stdClass();
         $activityBlock->columns = array(
             'date',
@@ -38,14 +42,37 @@ class IssueController extends Controller
         $activityBlock->entities = $this->getDoctrine()
             ->getRepository('AppBundle:IssueActivity')
             ->findByIssue($issue);
-        $context['activityBlock'] = $activityBlock;
 
+        return $activityBlock;
+    }
+
+    private function generateCollaboratorsBlock($issue)
+    {
         $collaboratorsBlock = new \stdClass();
         $collaboratorsBlock->blockTitle = $this->get('translator')->trans('Collaborators');
         /** @noinspection PhpUndefinedMethodInspection */
         $collaboratorsBlock->entities = $issue->getCollaborators();
-        $context['collaboratorsBlock'] = $collaboratorsBlock;
 
+        return $collaboratorsBlock;
+    }
+
+    private function getCurrentIssue($issue_slug)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Issue $issue */
+        $issue = $this->getDoctrine()
+            ->getRepository('AppBundle:Issue')
+            ->findOneBySlug($issue_slug);
+
+        return $issue;
+    }
+
+    /**
+     * @param array $context
+     * @param Issue $issue
+     */
+    private function maybePopulateStorySubtaskContext(&$context, $issue)
+    {
         if ($issue::TYPE_SUBTASK == $issue->getType()) {
             $context['parentTask'] = $issue->getParent();
         } elseif ($issue::TYPE_STORY == $issue->getType()) {
@@ -64,10 +91,5 @@ class IssueController extends Controller
                 'reporter',
             );
         }
-
-        return $this->render(
-            'AppBundle:issue:single.html.twig',
-            $context
-        );
     }
 }
