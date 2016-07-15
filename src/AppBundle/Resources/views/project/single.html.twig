@@ -15,8 +15,8 @@
     {% if entity %}
         <h3>{{ entity.label }}</h3>
         <p>{{ entity.summary }}</p>
-        {{ macros.acitivityBlock(activityBlock) }}
-        {{ macros.issuesBlock(issuesBlock) }}
+        {{ macros.acitivity_block(activityBlock) }}
+        {{ macros.issues_block(issuesBlock) }}
     {% else %}
         {{ 'nothing here'|trans }}
     {% endif %}

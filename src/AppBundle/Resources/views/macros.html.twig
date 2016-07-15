@@ -1,4 +1,4 @@
-{% macro acitivityBlock(context) %}
+{% macro acitivity_block(context) %}
     {% import _self as macros %}
     {% if not context.entities %}
         {% set empty_class = 'is-empty' %}
@@ -63,7 +63,7 @@
     </div>
 {% endmacro %}
 
-{% macro issuesBlock(context) %}
+{% macro issues_block(context) %}
     {% import _self as macros %}
     {% if not context.entities %}
         {% set empty_class = 'is-empty' %}
@@ -148,7 +148,7 @@
     </div>
 {% endmacro %}
 
-{% macro usersBlock(context) %}
+{% macro users_block(context) %}
     {% import _self as macros %}
     <div class="row block">
         <div class="page-header">

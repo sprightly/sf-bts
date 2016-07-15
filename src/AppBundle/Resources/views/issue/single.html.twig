@@ -16,7 +16,7 @@
         <h3>{{ entity.summary }}</h3>
         <p>{{ entity.description }}</p>
         {% if subTasksBlock is defined %}
-            {{ macros.issuesBlock(subTasksBlock) }}
+            {{ macros.issues_block(subTasksBlock) }}
         {% elseif parentTask is defined %}
             <span class="label label-default">{{ 'story'|trans }}:&nbsp;{{ macros.issue_anchor(parentTask) }}</span>
         {% endif %}
@@ -26,8 +26,8 @@
         {% if entity.resolution %}
             <span class="label label-default">{{ 'resolution'|trans }}:&nbsp;<span>{{ entity.resolution }}</span></span>
         {% endif %}
-        {{ macros.acitivityBlock(activityBlock) }}
-        {{ macros.usersBlock(collaboratorsBlock) }}
+        {{ macros.acitivity_block(activityBlock) }}
+        {{ macros.users_block(collaboratorsBlock) }}
     {% else %}
         {{ 'nothing here'|trans }}
     {% endif %}
