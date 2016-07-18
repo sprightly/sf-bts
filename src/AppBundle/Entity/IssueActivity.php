@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class IssueActivity
  * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\IssueActivityRepository")
  * @ORM\Table(name="issue_activity")
+ * @ORM\HasLifecycleCallbacks()
  * @package AppBundle\Entity
  */
 class IssueActivity
@@ -180,5 +181,13 @@ class IssueActivity
     public function getCreated()
     {
         return $this->created;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function beforeSave()
+    {
+        $this->setCreated(new \DateTime('now'));
     }
 }

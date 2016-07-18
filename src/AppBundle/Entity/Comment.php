@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Comment
  * @ORM\Entity
+ * @ORM\EntityListeners({"AppBundle\EventListener\CommentListener"})
  * @ORM\Table(name="comment")
  * @ORM\HasLifecycleCallbacks()
  * @package AppBundle\Entity
@@ -155,7 +156,6 @@ class Comment
 
     /**
      * @ORM\PrePersist
-     * @ORM\PreUpdate
      */
     public function beforeSave()
     {
