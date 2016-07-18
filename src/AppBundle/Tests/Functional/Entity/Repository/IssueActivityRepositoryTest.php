@@ -35,7 +35,7 @@ class IssueActivityRepositoryTest extends KernelTestCase
             ->findAllVisibleForCurrentUser($this->user);
         ;
 
-        $this->assertCount(2, $visibleProjects);
+        $this->assertCount(4, $visibleProjects);
     }
 
     protected function tearDown()

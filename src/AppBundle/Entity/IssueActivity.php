@@ -188,6 +188,8 @@ class IssueActivity
      */
     public function beforeSave()
     {
-        $this->setCreated(new \DateTime('now'));
+        if (is_null($this->created)) {
+            $this->setCreated(new \DateTime('now'));
+        }
     }
 }

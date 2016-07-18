@@ -46,7 +46,7 @@ class IssueController extends Controller
         $form = $this->createCommentForm($issue);
         $form->handleRequest($request);
 
-        if ($this->isGranted('view', $issue->getProject()) && $form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
             $comment->setAuthor($this->getUser());
             $em = $this->getDoctrine()->getManager();
