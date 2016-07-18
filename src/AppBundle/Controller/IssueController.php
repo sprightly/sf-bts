@@ -4,11 +4,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Comment;
 use AppBundle\Entity\Issue;
+use AppBundle\Form\Type\CommentType;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 
 class IssueController extends Controller
 {
@@ -22,15 +22,50 @@ class IssueController extends Controller
         $context = array();
         $context['entity'] = $this->getCurrentIssue($issue_slug);
         $this->denyAccessUnlessGranted('view', $context['entity']->getProject());
-        $context['activityBlock'] = $this->generateActivityBlock($context['entity']);
-        $context['collaboratorsBlock'] = $this->generateCollaboratorsBlock($context['entity']);
-        $context['commentsBlock'] = $this->generateCommentsBlock($context['entity']);
-        $this->maybePopulateStorySubtaskContext($context, $context['entity']);
+
+        $this->prepareBlocksContext($context);
 
         return $this->render(
             'AppBundle:issue:single.html.twig',
             $context
         );
+    }
+
+    /**
+     * @Route("issue/{issue_slug}/comment/new", name="new_comment")
+     * @param Request $request
+     * @param $issue_slug
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function newCommentAction(Request $request, $issue_slug)
+    {
+        $issue = $this->getCurrentIssue($issue_slug);
+
+        $this->denyAccessUnlessGranted('view', $issue->getProject());
+
+        $form = $this->createCommentForm($issue);
+        $form->handleRequest($request);
+
+        if ($this->isGranted('view', $issue->getProject()) && $form->isSubmitted() && $form->isValid()) {
+            $comment = $form->getData();
+            $comment->setAuthor($this->getUser());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($comment);
+            $em->flush();
+
+            return $this->redirectToRoute('single_issue', array('issue_slug' => $issue->getSlug()));
+        } else {
+            $context = array();
+            $context['entity'] = $this->getCurrentIssue($issue_slug);
+            $context['commentsBlock'] = new \stdClass();
+            $context['commentsBlock']->form = $form->createView();
+            $this->prepareBlocksContext($context);
+
+            return $this->render(
+                'AppBundle:issue:single.html.twig',
+                $context
+            );
+        }
     }
 
     private function generateActivityBlock($issue)
@@ -97,25 +132,57 @@ class IssueController extends Controller
         }
     }
 
-    private function generateCommentsBlock($issue)
+    /**
+     * @param array $context
+     * @return \stdClass
+     * @internal param Issue $issue
+     * @internal param \Symfony\Component\Form\Form $form
+     */
+    private function generateCommentsBlock(&$context)
     {
-        $commentsBlock = new \stdClass();
-        $commentsBlock->blockTitle = $this->get('translator')->trans('Comments');
+        if (!key_exists('commentsBlock', $context)) {
+            $context['commentsBlock'] = new \stdClass();
+        }
+        $context['commentsBlock']->blockTitle = $this->get('translator')->trans('Comments');
 
         /** @noinspection PhpUndefinedMethodInspection */
-        $commentsBlock->entities = $this->getDoctrine()
+        $context['commentsBlock']->entities = $this->getDoctrine()
             ->getRepository('AppBundle:Comment')
-            ->findByIssue($issue);
+            ->findByIssue($context['entity']);
 
+        if (!isset($context['commentsBlock']->form)) {
+            $form = $this->createCommentForm($context['entity']);
+            $context['commentsBlock']->form = $form->createView();
+        }
+    }
+
+    /**
+     * @param Issue $issue
+     * @return \Symfony\Component\Form\Form
+     */
+    private function createCommentForm($issue)
+    {
         $comment = new Comment();
-        $form = $this->createFormBuilder($comment)
-            ->add('body', null, array('label' => false, 'attr' => array('rows' => "7")))
-            ->add('author', HiddenType::class, array('attr' => array('value' => 'issue-id')))
-            ->add('issue', HiddenType::class, array('attr' => array('value' => 'issue-id')))
-            ->add('submit', SubmitType::class, array('label' => 'Post Comment'))
-            ->getForm();
-        $commentsBlock->form = $form->createView();
+        $form = $this->createForm(
+            CommentType::class,
+            $comment,
+            array(
+                'issue' => $issue->getId(),
+                'action' => $this->generateUrl('new_comment', array('issue_slug' => $issue->getSlug())),
+            )
+        );
 
-        return $commentsBlock;
+        return $form;
+    }
+
+    /**
+     * @param array $context
+     */
+    private function prepareBlocksContext(&$context)
+    {
+        $context['activityBlock'] = $this->generateActivityBlock($context['entity']);
+        $context['collaboratorsBlock'] = $this->generateCollaboratorsBlock($context['entity']);
+        $this->generateCommentsBlock($context);
+        $this->maybePopulateStorySubtaskContext($context, $context['entity']);
     }
 }

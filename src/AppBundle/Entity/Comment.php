@@ -3,11 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Comment
  * @ORM\Entity
  * @ORM\Table(name="comment")
+ * @ORM\HasLifecycleCallbacks()
  * @package AppBundle\Entity
  */
 class Comment
@@ -23,12 +25,14 @@ class Comment
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
+     * @Assert\Type("AppBundle\Entity\User")
      * @var User
      */
     private $author;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank()
      * @var string
      */
     private $body;
@@ -42,6 +46,7 @@ class Comment
     /**
      * @ORM\ManyToOne(targetEntity="Issue", inversedBy="comments")
      * @ORM\JoinColumn(name="issue_id", referencedColumnName="id", onDelete="CASCADE")
+     * @Assert\Type("AppBundle\Entity\Issue")
      * @var Issue
      */
     private $issue;
@@ -146,5 +151,14 @@ class Comment
     public function getIssue()
     {
         return $this->issue;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function beforeSave()
+    {
+        $this->setCreated(new \DateTime('now'));
     }
 }

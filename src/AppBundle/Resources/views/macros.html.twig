@@ -201,9 +201,7 @@
                 <p>{% trans %}Nothing here yet..{% endtrans %}</p>
             </div>
         {% endfor %}
-        {{ form_start(context.form) }}
-        {{ form_widget(context.form) }}
-        {{ form_end(context.form) }}
+        {{ form(context.form) }}
     </div>
 {% endmacro %}
 
