@@ -26,7 +26,7 @@
         {% if entity.resolution %}
             <span class="label label-default">{{ 'resolution'|trans }}:&nbsp;<span>{{ entity.resolution }}</span></span>
         {% endif %}
-        {{ macros.acitivity_block(activityBlock) }}
+        {{ macros.activity_block(activityBlock) }}
         {{ macros.users_block(collaboratorsBlock) }}
         {{ macros.comments_block(commentsBlock) }}
     {% else %}

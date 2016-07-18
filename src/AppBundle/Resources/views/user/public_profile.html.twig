@@ -1,4 +1,5 @@
 {% extends 'AppBundle::base.html.twig' %}
+{% import 'AppBundle::macros.html.twig' as macros %}
 
 {% block title %}
     {{ parent() }}
@@ -8,5 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    {{ username }}
+    <h3>{{ user.fullName }}</h3>
+    {{ macros.activity_block(activityBlock) }}
+    {{ macros.issues_block(issuesBlock) }}
 {% endblock %}

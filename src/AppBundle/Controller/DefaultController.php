@@ -34,7 +34,7 @@ class DefaultController extends Controller
         } else {
             $usersIssues->entities = $this->getDoctrine()
                 ->getRepository('AppBundle:Issue')
-                ->findAllUsersIssues($this->getUser());
+                ->findAllOpenIssueWhereUserCollaborator($this->getUser());
         }
 
         return $this->render(
