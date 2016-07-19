@@ -37,6 +37,7 @@ class UserController extends Controller
             ->findOneByUsername($username);
         $context['activityBlock'] = $this->generateActivityBlock($context['user']);
         $context['issuesBlock'] = $this->generateIssueBlock($context['user']);
+        $context['canEdit'] = $this->produceCanEdit($username);
 
         return $this->render(
             'AppBundle:user:public_profile.html.twig',
@@ -99,5 +100,14 @@ class UserController extends Controller
         );
 
         return $issuesBlock;
+    }
+
+    private function produceCanEdit($username)
+    {
+        if ($this->getUser()->getUsername() == $username || $this->isGranted('ROLE_ADMIN')) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

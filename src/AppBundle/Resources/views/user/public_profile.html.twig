@@ -10,6 +10,9 @@
 
 {% block content %}
     <h3>{{ user.fullName }}</h3>
+    {% if canEdit %}
+        <a href="{{ path('private_profile', {'username':user.username}) }}">{{ 'edit_profile'|trans }}</a>
+    {% endif %}
     {{ macros.activity_block(activityBlock) }}
     {{ macros.issues_block(issuesBlock) }}
 {% endblock %}
