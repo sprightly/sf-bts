@@ -418,6 +418,11 @@ class Issue
         return $collaborators;
     }
 
+    public function isCollaborator($user)
+    {
+        return $this->getCollaborators()->contains($user);
+    }
+
     /**
      * Set parent
      *
