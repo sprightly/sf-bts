@@ -15,7 +15,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $userAdmin->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $userAdmin->setFullName('Admin Full Name');
         $userAdmin->setEmail('admin@example.com');
-        $userAdmin->setTimezone('America/Yellowknife');
+        $userAdmin->setTimezone('Europe/Amsterdam');
         $userAdmin->setRoles(array(User::USER_ROLE, User::ADMIN_ROLE));
         $manager->persist($userAdmin);
 
@@ -24,7 +24,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $userManager->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $userManager->setFullName('Manager Full Name');
         $userManager->setEmail('manager@example.com');
-        $userManager->setTimezone('America/Yellowknife');
+        $userManager->setTimezone('Europe/Amsterdam');
         $userManager->setRoles(array(User::USER_ROLE, User::MANAGER_ROLE));
         $manager->persist($userManager);
 
@@ -33,7 +33,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $userOperator->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $userOperator->setFullName('Operator Full Name');
         $userOperator->setEmail('operator@example.com');
-        $userOperator->setTimezone('America/Yellowknife');
+        $userOperator->setTimezone('Europe/Amsterdam');
         $userOperator->setRoles(array(User::USER_ROLE, User::OPERATOR_ROLE));
         $manager->persist($userOperator);
 
@@ -43,7 +43,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $userUsual->setFullName('Usual Full Name');
         $userUsual->setEmail('usual@example.com');
         $userUsual->setRoles(array(User::USER_ROLE));
-        $userUsual->setTimezone('America/Yellowknife');
+        $userUsual->setTimezone('Europe/Amsterdam');
         $manager->persist($userUsual);
 
         $manager->flush();
