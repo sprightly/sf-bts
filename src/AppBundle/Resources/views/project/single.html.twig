@@ -15,6 +15,9 @@
     {% if entity %}
         <h3>{{ entity.label }}</h3>
         <p>{{ entity.summary }}</p>
+        {% if canAddIssue %}
+            <a href="{{ path('add_issue', {'project_slug':project_slug}) }}">{{ 'add issue'|trans }}</a>
+        {% endif %}
         {{ macros.activity_block(activityBlock) }}
         {{ macros.issues_block(issuesBlock) }}
     {% else %}

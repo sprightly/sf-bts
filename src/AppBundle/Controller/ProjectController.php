@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Project;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,7 +20,13 @@ class ProjectController extends Controller
         $project = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
             ->findOneBySlug($project_slug);
-         
+
+        if (!$project instanceof Project) {
+            throw $this->createNotFoundException(
+                $this->get('translator')->trans("Project doesn't exists")
+            );
+        }
+
         $this->denyAccessUnlessGranted('view', $project);
 
         $activityBlock = new \stdClass();
@@ -57,6 +64,8 @@ class ProjectController extends Controller
                 'entity' => $project,
                 'activityBlock' => $activityBlock,
                 'issuesBlock' => $issuesBlock,
+                'canAddIssue' => $this->isGranted('add_issue', $project),
+                'project_slug' => $project_slug
             )
         );
     }

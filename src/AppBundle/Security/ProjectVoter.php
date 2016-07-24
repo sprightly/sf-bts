@@ -11,6 +11,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ProjectVoter extends Voter
 {
     const VIEW = 'view';
+    const EDIT = 'edit';
+    const ADD_ISSUE = 'add_issue';
 
     private $decisionManager;
 
@@ -21,7 +23,7 @@ class ProjectVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        if (!in_array($attribute, array(self::VIEW))) {
+        if (!in_array($attribute, array(self::VIEW, self::EDIT, self::ADD_ISSUE))) {
             return false;
         }
 
@@ -46,6 +48,10 @@ class ProjectVoter extends Voter
         switch ($attribute) {
             case self::VIEW:
                 return $this->canView($project, $token);
+            case self::EDIT:
+                return $this->canEdit($token);
+            case self::ADD_ISSUE:
+                return $this->canAddIssue($project, $token);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -53,12 +59,37 @@ class ProjectVoter extends Voter
 
     private function canView(Project $project, TokenInterface $token)
     {
-        if ($this->decisionManager->decide($token, array('ROLE_ADMIN'))) {
+        if ($this->canEdit($token)) {
             return true;
         }
 
         $user = $token->getUser();
         if ($project->isMember($user)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function canEdit(TokenInterface $token)
+    {
+        if ($this->decisionManager->decide($token, array('ROLE_ADMIN', 'ROLE_MANAGER'))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function canAddIssue(Project $project, TokenInterface $token)
+    {
+        if ($this->canEdit($token)) {
+            return true;
+        }
+
+        $user = $token->getUser();
+        if ($this->decisionManager->decide($token, array('ROLE_OPERATOR'))
+            && $project->isMember($user)
+        ) {
             return true;
         }
 

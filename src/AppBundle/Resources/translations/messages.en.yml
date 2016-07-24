@@ -52,3 +52,7 @@ resolution: 'resolution'
 Comments: 'Comments'
 'Post Comment': 'Post Comment'
 edit_profile: 'edit profile'
+'New Issue': 'New Issue'
+'add issue': 'add issue'
+"Project doesn't exists": "Project doesn't exists"
+"Issue doesn't exists": "Issue doesn't exists"

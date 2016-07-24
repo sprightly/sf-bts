@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Comment;
 use AppBundle\Entity\Issue;
+use AppBundle\Entity\Project;
 use AppBundle\Form\Type\CommentType;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -21,6 +22,13 @@ class IssueController extends Controller
     {
         $context = array();
         $context['entity'] = $this->getCurrentIssue($issue_slug);
+
+        if (!$context['entity'] instanceof Issue) {
+            throw $this->createNotFoundException(
+                $this->get('translator')->trans("Issue doesn't exists")
+            );
+        }
+
         $this->denyAccessUnlessGranted('view', $context['entity']->getProject());
 
         $this->prepareBlocksContext($context);
@@ -66,6 +74,34 @@ class IssueController extends Controller
                 $context
             );
         }
+    }
+
+    /**
+     * @Route("/project/{project_slug}/issue/add", name="add_issue")
+     * @param $project_slug
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function showAddScreenAction($project_slug)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $project = $this->getDoctrine()
+            ->getRepository('AppBundle:Project')
+            ->findOneBySlug($project_slug);
+
+        if (!$project instanceof Project) {
+            throw $this->createNotFoundException(
+                $this->get('translator')->trans("Project doesn't exists")
+            );
+        }
+
+        $this->denyAccessUnlessGranted('add_issue', $project);
+
+        $context = array();
+
+        return $this->render(
+            'AppBundle:issue:add-screen.html.twig',
+            $context
+        );
     }
 
     private function generateActivityBlock($issue)

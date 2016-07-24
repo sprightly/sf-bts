@@ -1,0 +1,12 @@
+{% extends 'AppBundle::base.html.twig' %}
+{% import 'AppBundle::macros.html.twig' as macros %}
+
+{% block title %}
+    {{ parent() }}
+    {{ '&nbsp;-&nbsp;Project&nbsp;--&nbsp;'|trans }}
+    {{ 'New Issue'|trans }}
+{% endblock %}
+
+{% block content %}
+    <h3>{{ 'New Issue'|trans }}</h3>
+{% endblock %}
