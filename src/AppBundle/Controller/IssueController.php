@@ -27,13 +27,7 @@ class IssueController extends Controller
             $context['allowSubTaskAdding'] = true;
         }
 
-        if (!$context['entity'] instanceof Issue) {
-            throw $this->createNotFoundException(
-                $this->get('translator')->trans("Issue doesn't exists")
-            );
-        }
-
-        $this->denyAccessUnlessGranted('view', $context['entity']->getProject());
+        $this->exitIfNotAllowedOrNotExistsIssue($context['entity']);
 
         $this->prepareBlocksContext($context);
 
@@ -81,6 +75,20 @@ class IssueController extends Controller
     }
 
     /**
+     * @Route("/issue/{issue_slug}/edit", name="edit_issue")
+     */
+    public function editIssueAction($issue_slug, Request $request)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Issue $issue */
+        $issue = $this->getDoctrine()
+            ->getRepository('AppBundle:Issue')
+            ->findOneBySlug($issue_slug);
+
+        return $this->addOrEditIssue($request, $issue->getProject(), null, $issue);
+    }
+
+    /**
      * @Route("/project/{project_slug}/issue/add", name="add_issue")
      * @param $project_slug
      * @param Request $request
@@ -101,30 +109,26 @@ class IssueController extends Controller
 
         $this->denyAccessUnlessGranted('add_issue', $project);
 
-        return $this->addingIssue($request, $project);
+        return $this->addOrEditIssue($request, $project);
     }
 
     /**
      * @Route("/issue/{issue_slug}/add-subtask", name="add_sub_issue")
      * @param $issue_slug
+     * @param Request $request
      * @return \stdClass
      */
     public function addSubIssueAction($issue_slug, Request $request)
     {
         /** @noinspection PhpUndefinedMethodInspection */
+        /** @var Issue $issue */
         $issue = $this->getDoctrine()
             ->getRepository('AppBundle:Issue')
             ->findOneBySlug($issue_slug);
 
-        if (!$issue instanceof Issue) {
-            throw $this->createNotFoundException(
-                $this->get('translator')->trans("Issue doesn't exists")
-            );
-        }
+        $this->exitIfNotAllowedOrNotExistsIssue($issue);
 
-        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
-
-        return $this->addingIssue($request, $issue->getProject(), $issue);
+        return $this->addOrEditIssue($request, $issue->getProject(), $issue);
     }
 
     private function generateActivityBlock($issue)
@@ -245,12 +249,18 @@ class IssueController extends Controller
         $this->maybePopulateStorySubtaskContext($context, $context['entity']);
     }
 
-    private function addingIssue(Request $request, Project $project, $parentIssue = null)
+    private function addOrEditIssue(Request $request, Project $project, $parentIssue = null, $currentIssue = null)
     {
         $context = array();
-
-        $issue = new Issue();
         $options = array();
+
+        if ($currentIssue) {
+            $issue = $currentIssue;
+            $context['editAction'] = true;
+        } else {
+            $issue = new Issue();
+        }
+
         if ($parentIssue) {
             $options['hideTypeInput'] = true;
             $context['parentIssue'] = $parentIssue;
@@ -282,8 +292,19 @@ class IssueController extends Controller
 
         $context['form'] = $form->createView();
         return $this->render(
-            'AppBundle:issue:add-screen.html.twig',
+            'AppBundle:issue:add-or-edit.html.twig',
             $context
         );
+    }
+
+    private function exitIfNotAllowedOrNotExistsIssue(Issue $issue)
+    {
+        if (!$issue instanceof Issue) {
+            throw $this->createNotFoundException(
+                $this->get('translator')->trans("Issue doesn't exists")
+            );
+        }
+
+        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
     }
 }

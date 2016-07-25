@@ -76,7 +76,8 @@ class IssueType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\Issue',
-            'hideTypeInput' => false
+            'hideTypeInput' => false,
+            'editAction' => false
         ));
     }
 }

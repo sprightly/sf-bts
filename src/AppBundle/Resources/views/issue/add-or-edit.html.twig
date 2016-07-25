@@ -10,6 +10,8 @@
 {% block content %}
     {% if parentIssue is defined %}
         <h3>{{ 'New Issue In "%story%"'|trans({'%story%': parentIssue.summary}) }}</h3>
+    {% elseif editAction is defined %}
+        <h3>{{ 'Edit Issue'|trans }}</h3>
     {% else %}
         <h3>{{ 'New Issue'|trans }}</h3>
     {% endif %}
