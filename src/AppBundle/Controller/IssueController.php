@@ -22,6 +22,10 @@ class IssueController extends Controller
     {
         $context = array();
         $context['entity'] = $this->getCurrentIssue($issue_slug);
+        $context['allowSubTaskAdding'] = false;
+        if (Issue::TYPE_STORY == $context['entity']->getType()) {
+            $context['allowSubTaskAdding'] = true;
+        }
 
         if (!$context['entity'] instanceof Issue) {
             throw $this->createNotFoundException(
@@ -84,7 +88,6 @@ class IssueController extends Controller
      */
     public function addIssueAction($project_slug, Request $request)
     {
-        $context = array();
         /** @noinspection PhpUndefinedMethodInspection */
         $project = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
@@ -98,31 +101,30 @@ class IssueController extends Controller
 
         $this->denyAccessUnlessGranted('add_issue', $project);
 
-        $issue = new Issue();
-        $form = $this->createForm('AppBundle\Form\Type\IssueType', $issue);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $issue->setProject($project);
-            $issue->setSlug(
-                preg_replace(
-                    '/([^a-z0-9]+)/',
-                    '-',
-                    strtolower($issue->getSummary())
-                )
+        return $this->addingIssue($request, $project);
+    }
+
+    /**
+     * @Route("/issue/{issue_slug}/add-subtask", name="add_sub_issue")
+     * @param $issue_slug
+     * @return \stdClass
+     */
+    public function addSubIssueAction($issue_slug, Request $request)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $issue = $this->getDoctrine()
+            ->getRepository('AppBundle:Issue')
+            ->findOneBySlug($issue_slug);
+
+        if (!$issue instanceof Issue) {
+            throw $this->createNotFoundException(
+                $this->get('translator')->trans("Issue doesn't exists")
             );
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($issue);
-            $em->flush();
-
-            return $this->redirectToRoute('single_project', array('project_slug'=>$project_slug));
         }
 
-        $context['form'] = $form->createView();
-        return $this->render(
-            'AppBundle:issue:add-screen.html.twig',
-            $context
-        );
+        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
+
+        return $this->addingIssue($request, $issue->getProject(), $issue);
     }
 
     private function generateActivityBlock($issue)
@@ -241,5 +243,47 @@ class IssueController extends Controller
         $context['collaboratorsBlock'] = $this->generateCollaboratorsBlock($context['entity']);
         $this->generateCommentsBlock($context);
         $this->maybePopulateStorySubtaskContext($context, $context['entity']);
+    }
+
+    private function addingIssue(Request $request, Project $project, $parentIssue = null)
+    {
+        $context = array();
+
+        $issue = new Issue();
+        $options = array();
+        if ($parentIssue) {
+            $options['hideTypeInput'] = true;
+            $context['parentIssue'] = $parentIssue;
+        }
+        $form = $this->createForm('AppBundle\Form\Type\IssueType', $issue, $options);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $issue->setProject($project);
+            $issue->setSlug(
+                preg_replace(
+                    '/([^a-z0-9]+)/',
+                    '-',
+                    strtolower($issue->getSummary())
+                )
+            );
+
+            if ($issue instanceof Issue) {
+                $issue->setType(Issue::TYPE_SUBTASK);
+                $issue->setParent($parentIssue);
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($issue);
+            $em->flush();
+
+            return $this->redirectToRoute('single_project', array('project_slug'=>$project->getSlug()));
+        }
+
+        $context['form'] = $form->createView();
+        return $this->render(
+            'AppBundle:issue:add-screen.html.twig',
+            $context
+        );
     }
 }

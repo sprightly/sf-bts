@@ -15,6 +15,9 @@
     {% if entity %}
         <h3>{{ entity.summary }}</h3>
         <p>{{ entity.description }}</p>
+        {% if allowSubTaskAdding %}
+            <a href="{{ path('add_sub_issue', {'issue_slug':entity.slug}) }}">{{ 'add sub task'|trans }}</a>
+        {% endif %}
         {% if subTasksBlock is defined %}
             {{ macros.issues_block(subTasksBlock) }}
         {% elseif parentTask is defined %}

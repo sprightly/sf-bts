@@ -18,17 +18,25 @@ class IssueType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if (!$options['hideTypeInput']) {
+            $builder
+                ->add(
+                    'type',
+                    ChoiceType::class,
+                    array(
+                        'choices' => array(
+                            'bug' => Issue::TYPE_BUG,
+                            'story' => Issue::TYPE_STORY,
+                            'task' => Issue::TYPE_TASK,
+                            'subtask' => Issue::TYPE_SUBTASK
+                        ),
+                        'choices_as_values' => true,
+                        'required' => true
+                    )
+                );
+        }
+
         $builder
-            ->add('type', ChoiceType::class, array(
-                'choices' => array(
-                    'bug' => Issue::TYPE_BUG,
-                    'story' => Issue::TYPE_STORY,
-                    'task' => Issue::TYPE_TASK,
-                    'subtask' => Issue::TYPE_SUBTASK
-                ),
-                'choices_as_values' => true,
-                'required' => true
-            ))
             ->add('status', ChoiceType::class, array(
                 'choices' => array(
                     'open' => IssueStatusType::OPEN,
@@ -67,7 +75,8 @@ class IssueType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Issue'
+            'data_class' => 'AppBundle\Entity\Issue',
+            'hideTypeInput' => false
         ));
     }
 }

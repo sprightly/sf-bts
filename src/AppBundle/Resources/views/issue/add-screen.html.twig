@@ -8,7 +8,11 @@
 {% endblock %}
 
 {% block content %}
-    <h3>{{ 'New Issue'|trans }}</h3>
+    {% if parentIssue is defined %}
+        <h3>{{ 'New Issue In "%story%"'|trans({'%story%': parentIssue.summary}) }}</h3>
+    {% else %}
+        <h3>{{ 'New Issue'|trans }}</h3>
+    {% endif %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}
