@@ -79,10 +79,12 @@ class IssueController extends Controller
     /**
      * @Route("/project/{project_slug}/issue/add", name="add_issue")
      * @param $project_slug
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAddScreenAction($project_slug)
+    public function addIssueAction($project_slug, Request $request)
     {
+        $context = array();
         /** @noinspection PhpUndefinedMethodInspection */
         $project = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
@@ -96,8 +98,27 @@ class IssueController extends Controller
 
         $this->denyAccessUnlessGranted('add_issue', $project);
 
-        $context = array();
+        $issue = new Issue();
+        $form = $this->createForm('AppBundle\Form\Type\IssueType', $issue);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $issue->setProject($project);
+            $issue->setSlug(
+                preg_replace(
+                    '/([^a-z0-9]+)/',
+                    '-',
+                    strtolower($issue->getSummary())
+                )
+            );
 
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($issue);
+            $em->flush();
+
+            return $this->redirectToRoute('single_project', array('project_slug'=>$project_slug));
+        }
+
+        $context['form'] = $form->createView();
         return $this->render(
             'AppBundle:issue:add-screen.html.twig',
             $context

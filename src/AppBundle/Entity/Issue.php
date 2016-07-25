@@ -10,6 +10,7 @@ use Doctrine\ORM\PersistentCollection;
  * Class Issue
  * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\IssueRepository")
  * @ORM\Table(name="issue")
+ * @ORM\HasLifecycleCallbacks()
  * @package AppBundle\Entity
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
@@ -539,7 +540,7 @@ class Issue
      * Set slug
      *
      * @param string $slug
-     * @return Project
+     * @return Issue
      */
     public function setSlug($slug)
     {
@@ -556,5 +557,16 @@ class Issue
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function beforeSave()
+    {
+        if (is_null($this->created)) {
+            $this->setCreated(new \DateTime('now'));
+            $this->setUpdated(new \DateTime('now'));
+        }
     }
 }

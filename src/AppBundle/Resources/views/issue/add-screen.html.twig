@@ -9,4 +9,7 @@
 
 {% block content %}
     <h3>{{ 'New Issue'|trans }}</h3>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
 {% endblock %}
