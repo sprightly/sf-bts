@@ -23,8 +23,12 @@ class IssueController extends Controller
         $context = array();
         $context['entity'] = $this->getCurrentIssue($issue_slug);
         $context['allowSubTaskAdding'] = false;
-        if (Issue::TYPE_STORY == $context['entity']->getType()) {
-            $context['allowSubTaskAdding'] = true;
+        $context['allowEditing'] = false;
+        if ($this->isGranted('add_issue', $context['entity']->getProject())) {
+            $context['allowEditing'] = true;
+            if (Issue::TYPE_STORY == $context['entity']->getType()) {
+                $context['allowSubTaskAdding'] = true;
+            }
         }
 
         $this->exitIfNotAllowedOrNotExistsIssue($context['entity']);
@@ -85,6 +89,8 @@ class IssueController extends Controller
             ->getRepository('AppBundle:Issue')
             ->findOneBySlug($issue_slug);
 
+        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
+
         return $this->addOrEditIssue($request, $issue->getProject(), null, $issue);
     }
 
@@ -127,6 +133,8 @@ class IssueController extends Controller
             ->findOneBySlug($issue_slug);
 
         $this->exitIfNotAllowedOrNotExistsIssue($issue);
+
+        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
 
         return $this->addOrEditIssue($request, $issue->getProject(), $issue);
     }
@@ -261,7 +269,7 @@ class IssueController extends Controller
             $issue = new Issue();
         }
 
-        if ($parentIssue) {
+        if ($parentIssue instanceof Issue) {
             $options['hideTypeInput'] = true;
             $context['parentIssue'] = $parentIssue;
         }
@@ -278,7 +286,7 @@ class IssueController extends Controller
                 )
             );
 
-            if ($issue instanceof Issue) {
+            if ($parentIssue instanceof Issue) {
                 $issue->setType(Issue::TYPE_SUBTASK);
                 $issue->setParent($parentIssue);
             }
@@ -305,6 +313,6 @@ class IssueController extends Controller
             );
         }
 
-        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
+        $this->denyAccessUnlessGranted('view', $issue->getProject());
     }
 }
