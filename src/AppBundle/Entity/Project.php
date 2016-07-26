@@ -114,12 +114,14 @@ class Project
     /**
      * Add members
      *
-     * @param User $members
+     * @param User $member
      * @return Project
      */
-    public function addMember(User $members)
+    public function addMember(User $member)
     {
-        $this->members[] = $members;
+        if (!$this->isMember($member)) {
+            $this->members[] = $member;
+        }
 
         return $this;
     }

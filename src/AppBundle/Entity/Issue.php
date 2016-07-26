@@ -9,6 +9,7 @@ use Doctrine\ORM\PersistentCollection;
 /**
  * Class Issue
  * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\IssueRepository")
+ * @ORM\EntityListeners("AppBundle\EventListener\IssueListener")
  * @ORM\Table(name="issue")
  * @ORM\HasLifecycleCallbacks()
  * @package AppBundle\Entity
@@ -383,12 +384,15 @@ class Issue
     /**
      * Add collaborators
      *
-     * @param \AppBundle\Entity\User $collaborators
+     * @param \AppBundle\Entity\User $collaborator
      * @return Issue
      */
-    public function addCollaborator(User $collaborators)
+    public function addCollaborator(User $collaborator)
     {
-        $this->collaborators[] = $collaborators;
+
+        if (!$this->isCollaborator($collaborator)) {
+            $this->collaborators[] = $collaborator;
+        }
 
         return $this;
     }

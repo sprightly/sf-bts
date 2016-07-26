@@ -15,6 +15,11 @@ services:
         public: false
         tags:
             - { name: security.voter }
+    app_bundle.issue_listener:
+        class: AppBundle\EventListener\IssueListener
+        arguments: ['@service_container']
+        tags:
+            - { name: doctrine.orm.entity_listener }
     app.form.type.comment:
         class: AppBundle\Form\Type\CommentType
         arguments: ["@doctrine.orm.entity_manager"]

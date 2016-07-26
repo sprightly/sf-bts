@@ -14,10 +14,7 @@ class CommentListener
         $activity->setProject($comment->getIssue()->getProject());
         $activity->setType(IssueActivity::TYPE_COMMENT);
         $activity->setUser($comment->getAuthor());
-
-        if (!$comment->getIssue()->isCollaborator($comment->getAuthor())) {
-            $comment->getIssue()->addCollaborator($comment->getAuthor());
-        }
+        $comment->getIssue()->addCollaborator($comment->getAuthor());
 
         $em = $eventArgs->getEntityManager();
         $em->persist($activity);
