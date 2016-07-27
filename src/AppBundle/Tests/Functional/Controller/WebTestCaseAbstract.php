@@ -3,7 +3,6 @@
 namespace AppBundle\Tests\Functional\Controller;
 
 use AppBundle\DataFixtures\ORM\LoadCommentData;
-use AppBundle\DataFixtures\ORM\LoadIssueActivityData;
 use AppBundle\DataFixtures\ORM\LoadIssueData;
 use AppBundle\DataFixtures\ORM\LoadProjectData;
 use AppBundle\DataFixtures\ORM\LoadUserData;
@@ -53,7 +52,6 @@ class WebTestCaseAbstract extends WebTestCase
         $loader->addFixture(new LoadUserData());
         $loader->addFixture(new LoadProjectData());
         $loader->addFixture(new LoadIssueData());
-        $loader->addFixture(new LoadIssueActivityData());
         $loader->addFixture(new LoadCommentData());
 
         $purger = new ORMPurger($this->em);

@@ -24,7 +24,7 @@ class UserControllerTest extends WebTestCaseAbstract
         $this->assertContains('Operator Full Name', $crawler->filter('h3')->text());
 
         $this->assertContains('Activity', $crawler->filter('.row.block')->eq(0)->filter('h4')->text());
-        $this->assertEquals(2, $crawler->filter('.row.block')->eq(0)->filter('tbody tr')->count());
+        $this->assertEquals(6, $crawler->filter('.row.block')->eq(0)->filter('tbody tr')->count());
 
         $this->assertContains('Issues', $crawler->filter('.row.block')->eq(1)->filter('h4')->text());
         $this->assertContains('Nothing here yet..', $crawler->filter('.row.block')->eq(1)->filter('tbody td')->text());

@@ -146,7 +146,7 @@ class Project
         /** @var PersistentCollection $members*/
         $members = $this->members;
 
-        if (!$members->isInitialized()) {
+        if ($members instanceof PersistentCollection && !$members->isInitialized()) {
             $members->initialize();
         }
         return $members;

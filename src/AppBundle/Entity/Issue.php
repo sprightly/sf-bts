@@ -5,6 +5,8 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use AppBundle\Validator\Constraints as AppBundleAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Issue
@@ -12,6 +14,7 @@ use Doctrine\ORM\PersistentCollection;
  * @ORM\EntityListeners("AppBundle\EventListener\IssueListener")
  * @ORM\Table(name="issue")
  * @ORM\HasLifecycleCallbacks()
+ * @AppBundleAssert\ContainsProperSubTask
  * @package AppBundle\Entity
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
@@ -38,12 +41,14 @@ class Issue
     
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank()
      * @var string
      */
     private $summary;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank()
      * @var string
      */
     private $description;
@@ -56,12 +61,14 @@ class Issue
 
     /**
      * @ORM\Column(type="enum_issue_priority")
+     * @Assert\NotBlank()
      * @var string
      */
     private $priority;
 
     /**
      * @ORM\Column(type="enum_issue_status")
+     * @Assert\NotBlank()
      * @var string
      */
     private $status;
@@ -417,9 +424,11 @@ class Issue
         /** @var PersistentCollection $collaborators */
         $collaborators = $this->collaborators;
 
-        if (!$collaborators->isInitialized()) {
+
+        if ($collaborators instanceof PersistentCollection && !$collaborators->isInitialized()) {
             $collaborators->initialize();
         }
+
         return $collaborators;
     }
 
