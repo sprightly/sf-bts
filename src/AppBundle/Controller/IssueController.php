@@ -31,8 +31,6 @@ class IssueController extends Controller
             }
         }
 
-        $this->exitIfNotAllowedOrNotExistsIssue($context['entity']);
-
         $this->prepareBlocksContext($context);
 
         return $this->render(
@@ -42,49 +40,15 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("issue/{issue_slug}/comment/new", name="new_comment")
-     * @param Request $request
-     * @param $issue_slug
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function newCommentAction(Request $request, $issue_slug)
-    {
-        $issue = $this->getCurrentIssue($issue_slug);
-
-        $this->denyAccessUnlessGranted('view', $issue->getProject());
-
-        $form = $this->createCommentForm($issue);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $comment = $form->getData();
-            $comment->setAuthor($this->getUser());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
-
-            return $this->redirectToRoute('single_issue', array('issue_slug' => $issue->getSlug()));
-        } else {
-            $context = array();
-            $context['entity'] = $this->getCurrentIssue($issue_slug);
-            $context['commentsBlock'] = new \stdClass();
-            $context['commentsBlock']->form = $form->createView();
-            $this->prepareBlocksContext($context);
-
-            return $this->render(
-                'AppBundle:issue:single.html.twig',
-                $context
-            );
-        }
-    }
-
-    /**
      * @Route("/issue/{issue_slug}/edit", name="edit_issue")
+     * @param $issue_slug
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editIssueAction($issue_slug, Request $request)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
         /** @var Issue $issue */
+        /** @noinspection PhpUndefinedMethodInspection */
         $issue = $this->getDoctrine()
             ->getRepository('AppBundle:Issue')
             ->findOneBySlug($issue_slug);
@@ -126,17 +90,80 @@ class IssueController extends Controller
      */
     public function addSubIssueAction($issue_slug, Request $request)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        /** @var Issue $issue */
-        $issue = $this->getDoctrine()
-            ->getRepository('AppBundle:Issue')
-            ->findOneBySlug($issue_slug);
-
-        $this->exitIfNotAllowedOrNotExistsIssue($issue);
+        $issue = $this->getCurrentIssue($issue_slug);
 
         $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
 
         return $this->addOrEditIssue($request, $issue->getProject(), $issue);
+    }
+
+    /**
+     * @Route("issue/{issue_slug}/comment/new", name="new_comment")
+     * @param Request $request
+     * @param $issue_slug
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function newCommentAction(Request $request, $issue_slug)
+    {
+        $issue = $this->getCurrentIssue($issue_slug);
+
+        $this->denyAccessUnlessGranted('view', $issue->getProject());
+
+        $form = $this->createCommentForm($issue);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment = $form->getData();
+            $comment->setAuthor($this->getUser());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($comment);
+            $em->flush();
+
+            return $this->redirectToRoute('single_issue', array('issue_slug' => $issue->getSlug()));
+        } else {
+            $context = array();
+            $context['entity'] = $this->getCurrentIssue($issue_slug);
+            $context['commentsBlock'] = new \stdClass();
+            $context['commentsBlock']->form = $form->createView();
+            $this->prepareBlocksContext($context);
+
+            return $this->render(
+                'AppBundle:issue:single.html.twig',
+                $context
+            );
+        }
+    }
+
+    /**
+     * @Route("/comment/{comment_id}/delete", name="comment_delete")
+     * @param $comment_id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function editCommentAction($comment_id)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $comment = $this->getDoctrine()
+            ->getRepository('AppBundle:Comment')
+            ->findOneById($comment_id);
+
+        if (!$comment instanceof Comment) {
+            throw $this->createNotFoundException(
+                $this->get('translator')->trans("Comment doesn't exists")
+            );
+        }
+
+        $this->denyAccessUnlessGranted('delete', $comment);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($comment);
+        $em->flush();
+
+        return $this->redirectToRoute(
+            'single_issue',
+            array(
+                'issue_slug' => $comment->getIssue()->getSlug()
+            )
+        );
     }
 
     private function generateActivityBlock($issue)
@@ -173,6 +200,8 @@ class IssueController extends Controller
         $issue = $this->getDoctrine()
             ->getRepository('AppBundle:Issue')
             ->findOneBySlug($issue_slug);
+
+        $this->exitIfNotAllowedOrNotExistsIssue($issue);
 
         return $issue;
     }
@@ -295,10 +324,11 @@ class IssueController extends Controller
             $em->persist($issue);
             $em->flush();
 
-            return $this->redirectToRoute('single_project', array('project_slug'=>$project->getSlug()));
+            return $this->redirectToRoute('single_project', array('project_slug' => $project->getSlug()));
         }
 
         $context['form'] = $form->createView();
+
         return $this->render(
             'AppBundle:issue:add-or-edit.html.twig',
             $context

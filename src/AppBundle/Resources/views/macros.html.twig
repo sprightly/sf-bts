@@ -194,7 +194,14 @@
                 <div class="panel-body">
                     {{ entity.body }}
                 </div>
-                <div class="panel-footer">{{ entity.created|date_time_time_zone('Y.m.d h:m:s') }}, {{ macros.public_profile_anchor(entity.author.username) }}</div>
+                <div class="panel-footer">
+                    {% if entity.isAuthor(app.user) %}
+                        <a href="{{ path('comment_delete', {comment_id: entity.id}) }}">{{ 'delete'|trans }}</a>
+                        &nbsp;|&nbsp;
+                    {% endif %}
+                    {{ entity.created|date_time_time_zone('Y.m.d h:m:s') }},
+                    &nbsp;{{ macros.public_profile_anchor(entity.author.username) }}
+                </div>
             </div>
         {% else %}
             <div class="well">

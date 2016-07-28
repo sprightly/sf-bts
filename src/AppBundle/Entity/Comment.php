@@ -131,6 +131,15 @@ class Comment
         return $this->author;
     }
 
+    public function isAuthor(User $user)
+    {
+        if ($user == $this->author) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Set issue
      *

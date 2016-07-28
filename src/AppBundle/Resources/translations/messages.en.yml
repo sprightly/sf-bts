@@ -72,3 +72,5 @@ edit_profile: 'edit profile'
 'edit project': 'edit project'
 'Update Project': 'Update Project'
 'Edit Project': 'Edit Project'
+"Comment doesn't exists": "Comment doesn't exists"
+delete: 'delete'
