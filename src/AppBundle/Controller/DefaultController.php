@@ -15,7 +15,7 @@ class DefaultController extends Controller
     {
         $visibleForUserActivity = new \stdClass();
         $visibleForUserActivity->blockTitle = $this->get('translator')->trans('System activity');
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        if ($this->get('security.authorization_checker')->isGranted(array('ROLE_ADMIN', 'ROLE_MANAGER'))) {
             $visibleForUserActivity->entities = $this->getDoctrine()
                 ->getRepository('AppBundle:IssueActivity')
                 ->findAll();
@@ -27,7 +27,7 @@ class DefaultController extends Controller
 
         $usersIssues = new \stdClass();
         $usersIssues->blockTitle = $this->get('translator')->trans('Issues');
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        if ($this->get('security.authorization_checker')->isGranted(array('ROLE_ADMIN', 'ROLE_MANAGER'))) {
             $usersIssues->entities = $this->getDoctrine()
                 ->getRepository('AppBundle:Issue')
                 ->findAll();

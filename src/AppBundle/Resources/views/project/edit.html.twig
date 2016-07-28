@@ -1,0 +1,20 @@
+{% extends 'AppBundle::base.html.twig' %}
+{% import 'AppBundle::macros.html.twig' as macros %}
+
+{% block title %}
+    {{ parent() }}
+    {% trans %}&nbsp;-&nbsp;Project&nbsp;--&nbsp;{% endtrans %}
+    {% if entity %}
+        {{ entity.label }}
+        {{ '---&nbsp;Edit'|trans }}
+    {% else %}
+        {{ 'nothing here'|trans }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h3>{{ 'Edit Project'|trans }}</h3>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock %}
