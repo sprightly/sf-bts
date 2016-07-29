@@ -5,6 +5,11 @@
     {{ parent() }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/app/js/main.js') }}"></script>
+{% endblock %}
+
 {% block nav %}
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
         <nav class="navbar navbar-inverse navbar-fixed-top">

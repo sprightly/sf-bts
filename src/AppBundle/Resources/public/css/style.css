@@ -61,6 +61,10 @@ body.login .login-error {
     margin: 0 auto;
 }
 
+body.single_issue .cancel-edit {
+    display: none;
+}
+
 .block .page-header {
     border-color: #ddd;
     border-width: 3px;

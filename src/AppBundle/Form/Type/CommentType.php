@@ -24,6 +24,7 @@ class CommentType extends AbstractType
         $builder
             ->add('body', null, array('label' => false, 'attr' => array('rows' => "7")))
             ->add('issue', HiddenType::class, array('attr' => array('value' => $options['issue'])))
+            ->add('id', HiddenType::class, array('mapped'=>false))
             ->add('submit', SubmitType::class, array('label' => 'Post Comment'));
 
         $builder->get('issue')

@@ -190,12 +190,14 @@
             <h4>{{ context.blockTitle }}</h4>
         </div>
         {% for entity in context.entities %}
-            <div class="panel panel-default">
+            <div class="panel panel-default" data-id="{{ entity.id }}">
                 <div class="panel-body">
                     {{ entity.body }}
                 </div>
                 <div class="panel-footer">
                     {% if entity.isAuthor(app.user) %}
+                        <a href="#" class="edit-comment">{{ 'edit'|trans }}</a>
+                        &nbsp;|&nbsp;
                         <a href="{{ path('comment_delete', {comment_id: entity.id}) }}">{{ 'delete'|trans }}</a>
                         &nbsp;|&nbsp;
                     {% endif %}
@@ -208,7 +210,15 @@
                 <p>{% trans %}Nothing here yet..{% endtrans %}</p>
             </div>
         {% endfor %}
-        {{ form(context.form) }}
+        {{ form_start(context.form) }}
+            {{ form_row(context.form.body) }}
+            <div class="form-group">
+                {{ form_label(context.form.submit) }}
+                {{ form_widget(context.form.submit) }}
+                <button class="cancel-edit btn-default btn">Cancel Edit</button>
+            </div>
+            {{ form_rest(context.form) }}
+        {{ form_end(context.form) }}
     </div>
 {% endmacro %}
 

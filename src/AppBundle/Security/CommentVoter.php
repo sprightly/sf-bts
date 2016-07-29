@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class CommentVoter extends Voter
 {
     const DELETE = 'delete';
+    const EDIT = 'edit';
 
     private $decisionManager;
 
@@ -45,13 +46,14 @@ class CommentVoter extends Voter
 
         switch ($attribute) {
             case self::DELETE:
-                return $this->canDelete($comment, $token);
+            case self::EDIT:
+                return $this->canEditOrDelete($comment, $token);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canDelete(Comment $comment, TokenInterface $token)
+    private function canEditOrDelete(Comment $comment, TokenInterface $token)
     {
         if ($this->decisionManager->decide($token, array('ROLE_ADMIN'))) {
             return true;

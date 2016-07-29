@@ -98,23 +98,33 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("issue/{issue_slug}/comment/new", name="new_comment")
+     * @Route("issue/{issue_slug}/comment/add-or-edit", name="add_or_edit_comment")
      * @param Request $request
      * @param $issue_slug
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function newCommentAction(Request $request, $issue_slug)
+    public function addOrEditCommentAction(Request $request, $issue_slug)
     {
         $issue = $this->getCurrentIssue($issue_slug);
 
         $this->denyAccessUnlessGranted('view', $issue->getProject());
 
-        $form = $this->createCommentForm($issue);
+        $comment = null;
+        if (is_array($request->get('comment')) && !empty($request->get('comment')['id'])) {
+            $comment = $this->findCommentById(
+                $request->get('comment')['id']
+            );
+        }
+        $form = $this->createCommentForm($issue, $comment);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment = $form->getData();
-            $comment->setAuthor($this->getUser());
+            /** @var Comment $comment */
+            if (!$comment) {
+                $comment = $form->getData();
+                $comment->setAuthor($this->getUser());
+            }
             $em = $this->getDoctrine()->getManager();
             $em->persist($comment);
             $em->flush();
@@ -139,18 +149,9 @@ class IssueController extends Controller
      * @param $comment_id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function editCommentAction($comment_id)
+    public function deleteCommentAction($comment_id)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $comment = $this->getDoctrine()
-            ->getRepository('AppBundle:Comment')
-            ->findOneById($comment_id);
-
-        if (!$comment instanceof Comment) {
-            throw $this->createNotFoundException(
-                $this->get('translator')->trans("Comment doesn't exists")
-            );
-        }
+        $comment = $this->findCommentById($comment_id);
 
         $this->denyAccessUnlessGranted('delete', $comment);
 
@@ -258,17 +259,20 @@ class IssueController extends Controller
 
     /**
      * @param Issue $issue
+     * @param null $comment
      * @return \Symfony\Component\Form\Form
      */
-    private function createCommentForm($issue)
+    private function createCommentForm($issue, $comment = null)
     {
-        $comment = new Comment();
+        if (!$comment) {
+            $comment = new Comment();
+        }
         $form = $this->createForm(
             CommentType::class,
             $comment,
             array(
                 'issue' => $issue->getId(),
-                'action' => $this->generateUrl('new_comment', array('issue_slug' => $issue->getSlug())),
+                'action' => $this->generateUrl('add_or_edit_comment', array('issue_slug' => $issue->getSlug())),
             )
         );
 
@@ -344,5 +348,25 @@ class IssueController extends Controller
         }
 
         $this->denyAccessUnlessGranted('view', $issue->getProject());
+    }
+
+    /**
+     * @param $comment_id
+     * @return Comment
+     */
+    private function findCommentById($comment_id)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $comment = $this->getDoctrine()
+            ->getRepository('AppBundle:Comment')
+            ->findOneById($comment_id);
+
+        if (!$comment instanceof Comment) {
+            throw $this->createNotFoundException(
+                $this->get('translator')->trans("Comment doesn't exists")
+            );
+        }
+
+        return $comment;
     }
 }
