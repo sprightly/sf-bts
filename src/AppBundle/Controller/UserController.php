@@ -2,30 +2,45 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
 {
     /**
      * @Route("/profile", name="private_profile")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function profileAction()
+    public function profileAction(Request $request)
     {
         $user = $this->getUser();
 
+        $form = $this->createForm('AppBundle\Form\Type\UserType', $user);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+            $this->maybeUpdatePassword($user, $request);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+        }
+
         return $this->render(
-            'AppBundle:user:public_profile.html.twig',
+            'AppBundle:user:private_profile.html.twig',
             array(
-                'username' => $user->getUsername(),
+                'form' => $form->createView(),
             )
         );
     }
 
     /**
      * @Route("/profile/{username}", name="public_profile")
-     * @internal param $username
+     * @param $username
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function publicProfileAction($username)
@@ -108,6 +123,15 @@ class UserController extends Controller
             return true;
         } else {
             return false;
+        }
+    }
+
+    private function maybeUpdatePassword(User $user, Request $request)
+    {
+        if (is_array($request->request->get('user')) && !empty($request->request->get('user')['password'])) {
+            $user->setPassword(
+                password_hash($request->request->get('user')['password'], PASSWORD_BCRYPT)
+            );
         }
     }
 }

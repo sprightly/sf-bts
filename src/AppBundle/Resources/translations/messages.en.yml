@@ -75,3 +75,8 @@ edit_profile: 'edit profile'
 "Comment doesn't exists": "Comment doesn't exists"
 delete: 'delete'
 edit: 'edit'
+Submit: 'Submit'
+Email: 'Email'
+'Full name': 'Full name'
+Timezone: 'Timezone'
+'Password (leave empty if not needed to change)': 'Password (leave empty if not needed to change)'
