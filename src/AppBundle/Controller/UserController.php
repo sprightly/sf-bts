@@ -11,13 +11,19 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends Controller
 {
     /**
-     * @Route("/profile", name="private_profile")
+     * @Route("/profile/{username}/edit", name="private_profile")
+     * @param $username
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function profileAction(Request $request)
+    public function profileAction($username, Request $request)
     {
-        $user = $this->getUser();
+        /** @noinspection PhpUndefinedMethodInspection */
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->findOneByUsername($username);
+
+        $this->denyAccessUnlessGranted('edit', $user);
 
         $form = $this->createForm('AppBundle\Form\Type\UserType', $user);
 
@@ -52,7 +58,7 @@ class UserController extends Controller
             ->findOneByUsername($username);
         $context['activityBlock'] = $this->generateActivityBlock($context['user']);
         $context['issuesBlock'] = $this->generateIssueBlock($context['user']);
-        $context['canEdit'] = $this->produceCanEdit($username);
+        $context['canEdit'] = $this->isGranted('edit', $context['user']);
 
         return $this->render(
             'AppBundle:user:public_profile.html.twig',
@@ -115,15 +121,6 @@ class UserController extends Controller
         );
 
         return $issuesBlock;
-    }
-
-    private function produceCanEdit($username)
-    {
-        if ($this->getUser()->getUsername() == $username || $this->isGranted('ROLE_ADMIN')) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private function maybeUpdatePassword(User $user, Request $request)
