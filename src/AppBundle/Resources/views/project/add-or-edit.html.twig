@@ -5,19 +5,17 @@
     {{ parent() }}
     {% trans %}dash.project.two.dash{% endtrans %}
     {% if editAction is defined %}
-        {{ 'Edit Issue'|trans }}
+        {{ 'Edit Project'|trans }}
     {% else %}
-        {{ 'New Issue'|trans }}
+        {{ 'Add Project'|trans }}
     {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if parentIssue is defined %}
-        <h3>{{ 'New Issue In "%story%"'|trans({'%story%': parentIssue.summary}) }}</h3>
-    {% elseif editAction is defined %}
-        <h3>{{ 'Edit Issue'|trans }}</h3>
+    {% if editAction is defined %}
+        <h3>{{ 'Edit Project'|trans }}</h3>
     {% else %}
-        <h3>{{ 'New Issue'|trans }}</h3>
+        <h3>{{ 'Add Project'|trans }}</h3>
     {% endif %}
     {{ form_start(form) }}
     {{ form_widget(form) }}

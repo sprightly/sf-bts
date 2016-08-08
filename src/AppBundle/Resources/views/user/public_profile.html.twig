@@ -3,9 +3,7 @@
 
 {% block title %}
     {{ parent() }}
-    {% trans %}
-    &nbsp;-&nbsp;Public Profile
-    {% endtrans %}
+    {{ 'dash.public.profile'|trans }}
 {% endblock %}
 
 {% block content %}

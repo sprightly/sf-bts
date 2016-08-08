@@ -11,6 +11,41 @@ use Symfony\Component\HttpFoundation\Request;
 class ProjectController extends Controller
 {
     /**
+     * @Route("/project/add", name="add_project")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function addAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $project = new Project();
+        $form = $this->createForm('AppBundle\Form\Type\ProjectType', $project);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $project->setSlug(
+                preg_replace(
+                    '/([^a-z0-9]+)/',
+                    '-',
+                    strtolower($project->getLabel())
+                )
+            );
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($project);
+            $em->flush();
+
+            return $this->redirectToRoute('single_project', array('project_slug'=>$project->getSlug()));
+        }
+
+        return $this->render(
+            'AppBundle:project:add-or-edit.html.twig',
+            array(
+                'form' => $form->createView()
+            )
+        );
+    }
+
+    /**
      * @Route("project/{project_slug}", name="single_project")
      * @param $project_slug
      * @return \Symfony\Component\HttpFoundation\Response
@@ -25,7 +60,7 @@ class ProjectController extends Controller
             ->findOneBySlug($project_slug);
         $context['entity'] = $project;
 
-        $this->exitIfNotAllowedOrNotExistsIssue($project);
+        $this->exitIfNotAllowedOrNotExists($project);
 
         $activityBlock = new \stdClass();
         $activityBlock->columns = array(
@@ -87,7 +122,7 @@ class ProjectController extends Controller
             ->findOneBySlug($project_slug);
         $context['entity'] = $project;
 
-        $this->exitIfNotAllowedOrNotExistsIssue($project);
+        $this->exitIfNotAllowedOrNotExists($project);
         $this->denyAccessUnlessGranted('edit', $project);
 
         $form = $this->createForm('AppBundle\Form\Type\ProjectType', $project);
@@ -100,14 +135,15 @@ class ProjectController extends Controller
             return $this->redirectToRoute('single_project', array('project_slug'=>$project->getSlug()));
         }
         $context['form'] = $form->createView();
+        $context['editAction'] = true;
 
         return $this->render(
-            'AppBundle:project:edit.html.twig',
+            'AppBundle:project:add-or-edit.html.twig',
             $context
         );
     }
 
-    private function exitIfNotAllowedOrNotExistsIssue(Project $project)
+    private function exitIfNotAllowedOrNotExists(Project $project)
     {
         if (!$project instanceof Project) {
             throw $this->createNotFoundException(

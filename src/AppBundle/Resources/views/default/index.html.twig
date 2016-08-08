@@ -4,9 +4,7 @@
 
 {% block title %}
     {{ parent() }}
-    {% trans %}
-    &nbsp;-&nbsp; Main
-    {% endtrans %}
+    {{ 'dash.main'|trans }}
 {% endblock %}
 
 {% block content %}
