@@ -164,7 +164,7 @@ class IssueActivity
      * Set created
      *
      * @param \DateTime $created
-     * @return Comment
+     * @return IssueActivity
      */
     public function setCreated($created)
     {

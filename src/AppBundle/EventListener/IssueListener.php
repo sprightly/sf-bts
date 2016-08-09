@@ -5,6 +5,7 @@ use AppBundle\Entity\Issue;
 use AppBundle\Entity\IssueActivity;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class IssueListener
 {
@@ -37,7 +38,9 @@ class IssueListener
     private function createActivity(Issue $issue, $type, LifecycleEventArgs $eventArgs)
     {
         if ($this->container->get('security.token_storage')->getToken()) {
-            $author = $this->container->get('security.token_storage')->getToken()->getUser();
+            /** @var TokenInterface $token */
+            $token = $this->container->get('security.token_storage')->getToken();
+            $author = $token->getUser();
         } else {
             $author = $issue->getReporter();
         }

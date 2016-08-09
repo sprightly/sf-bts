@@ -18,6 +18,7 @@ class ContainsProperSubTaskValidator extends ConstraintValidator
             || ($value->getParent() && !$this->isSubTask($value))
         ) {
             /** @noinspection PhpUndefinedMethodInspection */
+            /** @noinspection PhpUndefinedFieldInspection */
             $this->context->buildViolation($constraint->message)
                 ->setCode(1)
                 ->addViolation();
