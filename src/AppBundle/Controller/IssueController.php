@@ -114,6 +114,7 @@ class IssueController extends Controller
             $comment = $this->findCommentById(
                 $request->get('comment')['id']
             );
+            $this->denyAccessUnlessGranted('edit', $comment);
         }
         $form = $this->createCommentForm($issue, $comment);
 
@@ -339,7 +340,7 @@ class IssueController extends Controller
         );
     }
 
-    private function exitIfNotAllowedOrNotExistsIssue(Issue $issue)
+    private function exitIfNotAllowedOrNotExistsIssue($issue)
     {
         if (!$issue instanceof Issue) {
             throw $this->createNotFoundException(

@@ -22,7 +22,7 @@ class CommentVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        if (!in_array($attribute, array(self::DELETE))) {
+        if (!in_array($attribute, array(self::DELETE, self::EDIT))) {
             return false;
         }
 

@@ -26,15 +26,15 @@ class IssueTest extends WebTestCase
         $this->constraintForProperSubTask = new ContainsProperSubTask();
     }
 
-    public function testStoryAsSubTaskViolation()
+    public function testStoryAsTasksHolderViolation()
     {
         $validator = $this->container->get('validator');
 
-        $storyIssue = new Issue();
+        $anotherTaskIssue = new Issue();
         $taskIssue = new Issue();
         $taskIssue->setType(Issue::TYPE_TASK);
-        $storyIssue->setType(Issue::TYPE_STORY);
-        $taskIssue->addChild($taskIssue);
+        $anotherTaskIssue->setType(Issue::TYPE_STORY);
+        $taskIssue->addChild($anotherTaskIssue);
 
         $errors = $validator->validate($taskIssue);
         /** @var ConstraintViolation $error */
@@ -43,10 +43,10 @@ class IssueTest extends WebTestCase
                 return;
             }
         }
-        $this->fail('Failed testStoryAsSubTaskViolation!');
+        $this->fail('Failed testStoryAsTasksHolderViolation!');
     }
 
-    public function testChildrenInNotStoryViolation()
+    public function testStoryAsTasksHolderAcceptance()
     {
         $validator = $this->container->get('validator');
 
@@ -54,16 +54,54 @@ class IssueTest extends WebTestCase
         $taskIssue = new Issue();
         $taskIssue->setType(Issue::TYPE_TASK);
         $storyIssue->setType(Issue::TYPE_STORY);
-        $storyIssue->setParent($taskIssue);
+        $storyIssue->addChild($taskIssue);
 
         $errors = $validator->validate($storyIssue);
+        /** @var ConstraintViolation $error */
+        foreach ($errors as $error) {
+            if (1 == $error->getCode()) {
+                $this->fail('Failed testStoryAsTasksHolderAcceptance!');
+            }
+        }
+    }
+
+    public function testChildrenInNotStoryViolation()
+    {
+        $validator = $this->container->get('validator');
+
+        $anotherTaskIssue = new Issue();
+        $taskIssue = new Issue();
+        $taskIssue->setType(Issue::TYPE_TASK);
+        $anotherTaskIssue->setType(Issue::TYPE_TASK);
+        $anotherTaskIssue->setParent($taskIssue);
+
+        $errors = $validator->validate($anotherTaskIssue);
         /** @var ConstraintViolation $error */
         foreach ($errors as $error) {
             if (1 == $error->getCode()) {
                 return;
             }
         }
-        $this->fail('Failed testStoryAsSubTaskViolation!');
+        $this->fail('Failed testChildrenInNotStoryViolation!');
+    }
+
+    public function testChildrenInStoryAcceptance()
+    {
+        $validator = $this->container->get('validator');
+
+        $taskIssue = new Issue();
+        $storyIssue = new Issue();
+        $storyIssue->setType(Issue::TYPE_STORY);
+        $taskIssue->setType(Issue::TYPE_SUBTASK);
+        $taskIssue->setParent($storyIssue);
+
+        $errors = $validator->validate($taskIssue);
+        /** @var ConstraintViolation $error */
+        foreach ($errors as $error) {
+            if (1 == $error->getCode()) {
+                $this->fail('Failed testChildrenInStoryAcceptance!');
+            }
+        }
     }
 
     public function testAccessToComments()

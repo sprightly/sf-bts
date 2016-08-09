@@ -18,7 +18,7 @@ class ProjectType extends AbstractType
                 'attr' => array('maxlength' => 150)
             ))
             ->add('summary')
-            ->add('submit', SubmitType::class, array('label' => 'Update Project'));
+            ->add('submit', SubmitType::class, array('label' => 'Post Project'));
     }
 
     public function configureOptions(OptionsResolver $resolver)

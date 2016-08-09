@@ -27,13 +27,13 @@ class WebTestCaseAbstract extends WebTestCase
         $this->loadFixtures();
     }
     
-    protected function logIn()
+    protected function logIn($username = 'operator', $password = 'test')
     {
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->filter('form button')->form(
             array(
-                '_username' => 'operator',
-                '_password' => 'test'
+                '_username' => $username,
+                '_password' => $password
             )
         );
         $this->client->submit($form);

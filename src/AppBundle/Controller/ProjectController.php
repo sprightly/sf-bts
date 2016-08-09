@@ -143,7 +143,7 @@ class ProjectController extends Controller
         );
     }
 
-    private function exitIfNotAllowedOrNotExists(Project $project)
+    private function exitIfNotAllowedOrNotExists($project)
     {
         if (!$project instanceof Project) {
             throw $this->createNotFoundException(
