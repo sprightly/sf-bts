@@ -25,7 +25,11 @@ class UserController extends Controller
 
         $this->denyAccessUnlessGranted('edit', $user);
 
-        $form = $this->createForm('AppBundle\Form\Type\UserType', $user);
+        $form = $this->createForm(
+            'AppBundle\Form\Type\UserType',
+            $user,
+            array('current_user_admin' => $this->isGranted('ROLE_ADMIN'))
+        );
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

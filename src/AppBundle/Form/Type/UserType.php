@@ -2,7 +2,9 @@
 
 namespace AppBundle\Form\Type;
 
+use AppBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -26,8 +28,27 @@ class UserType extends AbstractType
                     'label' => 'Password (leave empty if not needed to change)',
                 )
             )
-            ->add('timezone')
-        ->add('submit', SubmitType::class, array('label' => 'Submit'));
+            ->add('timezone');
+
+        if ($options['current_user_admin']) {
+            $builder->add(
+                'roles',
+                ChoiceType::class,
+                array(
+                    'choices' => array(
+                        'user' => User::USER_ROLE,
+                        'operator' => User::OPERATOR_ROLE,
+                        'manager' => User::MANAGER_ROLE,
+                        'admin' => User::ADMIN_ROLE,
+                    ),
+                    'choices_as_values' => true,
+                    'required' => true,
+                    'multiple' => true,
+                )
+            );
+        }
+
+        $builder->add('submit', SubmitType::class, array('label' => 'Submit'));
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -35,6 +56,7 @@ class UserType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'AppBundle\Entity\User',
+                'current_user_admin' => null
             )
         );
     }
