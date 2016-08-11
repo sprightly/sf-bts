@@ -27,8 +27,7 @@ class IssueType extends AbstractType
                         'choices' => array(
                             'bug' => Issue::TYPE_BUG,
                             'story' => Issue::TYPE_STORY,
-                            'task' => Issue::TYPE_TASK,
-                            'subtask' => Issue::TYPE_SUBTASK
+                            'task' => Issue::TYPE_TASK
                         ),
                         'choices_as_values' => true,
                         'required' => true
