@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Tests\Type;
+namespace AppBundle\Tests\Unit\Type;
 
 use AppBundle\Type\IssueStatusType;
 use Doctrine\DBAL\Platforms\MySqlPlatform;

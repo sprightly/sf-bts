@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Tests\Security;
+namespace AppBundle\Tests\Unit\Security;
 
 use AppBundle\Entity\Comment;
 use AppBundle\Entity\User;

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Tests\Entity;
+namespace AppBundle\Tests\Functional\Entity;
 
 use AppBundle\Entity\Comment;
 use AppBundle\Entity\Issue;
