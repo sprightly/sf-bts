@@ -23,7 +23,8 @@
         <p>{{ entity.description }}</p>
         {% if subTasksBlock is defined %}
             {{ macros.issues_block(subTasksBlock) }}
-            <span class="label label-default">{{ 'story'|trans }}:&nbsp;{{ macros.issue_anchor(entity) }}</span>
+        {% elseif entity.getParent is not null %}
+            <span class="label label-default">{{ 'Story'|trans }}:&nbsp;<span>{{ macros.issue_anchor(entity.getParent) }}</span></span>
         {% endif %}
         <span class="label label-default">{{ 'priority'|trans }}:&nbsp;<span>{{ entity.priority }}</span></span>
         <span class="label label-default">{{ 'type'|trans }}:&nbsp;<span>{{ entity.type }}</span></span>

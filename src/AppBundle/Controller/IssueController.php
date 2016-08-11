@@ -303,8 +303,14 @@ class IssueController extends Controller
             $issue = new Issue();
         }
 
-        if ($parentIssue instanceof Issue) {
+        if ($parentIssue instanceof Issue
+            || Issue::TYPE_STORY == $issue->getType()
+            || Issue::TYPE_SUBTASK == $issue->getType()
+        ) {
             $options['hideTypeInput'] = true;
+        }
+
+        if ($parentIssue instanceof Issue) {
             $context['parentIssue'] = $parentIssue;
         }
         $form = $this->createForm('AppBundle\Form\Type\IssueType', $issue, $options);
