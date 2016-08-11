@@ -3,6 +3,7 @@ namespace AppBundle\EventListener;
 
 use AppBundle\Entity\Issue;
 use AppBundle\Entity\IssueActivity;
+use AppBundle\Entity\User;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -20,9 +21,14 @@ class IssueListener
         $this->container = $container;
     }
 
-    public function postPersist(Issue $issue, $eventArgs)
+    public function postPersist(Issue $issue, LifecycleEventArgs $eventArgs)
     {
         $this->createActivity($issue, IssueActivity::TYPE_CREATED, $eventArgs);
+
+        $this->addCollaborator($issue, $issue->getAssignee(), $eventArgs);
+        $this->addCollaborator($issue, $issue->getReporter(), $eventArgs);
+
+        $eventArgs->getEntityManager()->flush();
     }
 
     public function postUpdate(Issue $issue, LifecycleEventArgs $eventArgs)
@@ -32,6 +38,7 @@ class IssueListener
         $changeSet = $uow->getEntityChangeSet($issue);
         if (!empty($changeSet) && isset($changeSet['status'])) {
             $this->createActivity($issue, IssueActivity::TYPE_STATUS_CHANGED, $eventArgs);
+            $eventArgs->getEntityManager()->flush();
         }
     }
 
@@ -50,11 +57,16 @@ class IssueListener
         $activity->setProject($issue->getProject());
         $activity->setType($type);
         $activity->setUser($author);
-        $issue->addCollaborator($author);
-        $issue->getProject()->addMember($author);
+        $this->addCollaborator($issue, $author, $eventArgs);
 
-        $em = $eventArgs->getEntityManager();
-        $em->persist($activity);
-        $em->flush();
+        $eventArgs->getEntityManager()->persist($activity);
+    }
+
+    private function addCollaborator(Issue $issue, User $user, LifecycleEventArgs $eventArgs)
+    {
+        $issue->addCollaborator($user);
+        $issue->getProject()->addMember($user);
+        $eventArgs->getEntityManager()->persist($issue);
+        $eventArgs->getEntityManager()->persist($issue->getProject());
     }
 }
