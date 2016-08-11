@@ -8,6 +8,7 @@
 
 {% block content %}
     <h3>{{ user.fullName }}</h3>
+    <span class="label label-default">{{ user.getImportantRole|trans }}</span><br><br>
     {% if canEdit %}
         <a href="{{ path('private_profile', {'username':user.username}) }}">{{ 'edit_profile'|trans }}</a>
     {% endif %}

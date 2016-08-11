@@ -195,7 +195,7 @@
                     {{ entity.body }}
                 </div>
                 <div class="panel-footer">
-                    {% if entity.isAuthor(app.user) %}
+                    {% if entity.isAuthor(app.user) or is_granted('ROLE_ADMIN') %}
                         <a href="#" class="edit-comment">{{ 'edit'|trans }}</a>
                         &nbsp;|&nbsp;
                         <a href="{{ path('comment_delete', {comment_id: entity.id}) }}">{{ 'delete'|trans }}</a>

@@ -217,6 +217,30 @@ class User implements UserInterface, \Serializable
     }
 
     /**
+     * @return string
+     */
+    public function getImportantRole()
+    {
+        $roles = $this->roles;
+        if (count($roles) > 1) {
+            array_filter(
+                $roles,
+                function ($value) {
+                    if (self::USER_ROLE == $value) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+        $role = array_pop($roles);
+
+        return $role;
+    }
+
+    /**
      * Add projects
      *
      * @param Project $projects
