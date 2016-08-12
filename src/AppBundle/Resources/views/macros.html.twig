@@ -198,7 +198,7 @@
                     {% if entity.isAuthor(app.user) or is_granted('ROLE_ADMIN') %}
                         <a href="#" class="edit-comment">{{ 'edit'|trans }}</a>
                         &nbsp;|&nbsp;
-                        <a href="{{ path('comment_delete', {comment_id: entity.id}) }}">{{ 'delete'|trans }}</a>
+                        <a href="{{ path('comment_delete', {'id': entity.id}) }}">{{ 'delete'|trans }}</a>
                         &nbsp;|&nbsp;
                     {% endif %}
                     {{ entity.created|date('Y.m.d h:m:s', app.user.timezone) }},
@@ -231,5 +231,5 @@
 {% endmacro %}
 
 {% macro issue_anchor(issue) %}
-    <a href="{{ path('single_issue', {'issue_slug':issue.slug}) }}">{{ issue.summary }}</a>
+    <a href="{{ path('single_issue', {'slug':issue.slug}) }}">{{ issue.summary }}</a>
 {% endmacro %}

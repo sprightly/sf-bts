@@ -19,7 +19,7 @@
             <a href="{{ path('edit_project', {'project_slug':entity.slug}) }}">{{ 'edit project'|trans }}</a>
         {% endif %}
         {% if canAddIssue %}
-            <a href="{{ path('add_issue', {'project_slug':entity.slug}) }}">{{ 'add issue'|trans }}</a>
+            <a href="{{ path('add_issue', {'slug':entity.slug}) }}">{{ 'add issue'|trans }}</a>
         {% endif %}
         {{ macros.activity_block(activityBlock) }}
         {{ macros.issues_block(issuesBlock) }}

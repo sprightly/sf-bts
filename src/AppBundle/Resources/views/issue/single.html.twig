@@ -18,10 +18,10 @@
         {% set blocks = get_issue_blocks(entity) %}
         <h3>{{ entity.summary }}</h3>
         {% if allowEditing %}
-            <a href="{{ path('edit_issue', {'issue_slug':entity.slug}) }}">{{ 'edit issue'|trans }}</a>
+            <a href="{{ path('edit_issue', {'slug':entity.slug}) }}">{{ 'edit issue'|trans }}</a>
         {% endif %}
         {% if allowSubTaskAdding %}
-            <a href="{{ path('add_sub_issue', {'issue_slug':entity.slug}) }}">{{ 'add sub task'|trans }}</a>
+            <a href="{{ path('add_sub_issue', {'slug':entity.slug}) }}">{{ 'add sub task'|trans }}</a>
         {% endif %}
         <p>{{ entity.description }}</p>
         {% if blocks.subTasksBlock is defined %}

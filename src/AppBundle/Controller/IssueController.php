@@ -10,18 +10,21 @@ use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use /** @noinspection PhpUnusedAliasInspection */
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class IssueController extends Controller
 {
     /**
-     * @Route("issue/{issue_slug}", name="single_issue")
-     * @param $issue_slug
+     * @Route("issue/{slug}", name="single_issue")
+     * @Security("is_granted('view', issue.getProject())")
+     * @param Issue $issue
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction($issue_slug)
+    public function showAction(Issue $issue)
     {
         $context = array();
-        $context['entity'] = $this->getCurrentIssue($issue_slug);
+        $context['entity'] = $issue;
         $context['allowSubTaskAdding'] = false;
         $context['allowEditing'] = false;
         if ($this->isGranted('add_issue', $context['entity']->getProject())) {
@@ -39,75 +42,50 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("/issue/{issue_slug}/edit", name="edit_issue")
-     * @param $issue_slug
+     * @Route("/issue/{slug}/edit", name="edit_issue")
+     * @Security("is_granted('add_issue', issue.getProject())")
+     * @param Issue $issue
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editIssueAction($issue_slug, Request $request)
+    public function editIssueAction(Issue $issue, Request $request)
     {
-        /** @var Issue $issue */
-        /** @noinspection PhpUndefinedMethodInspection */
-        $issue = $this->getDoctrine()
-            ->getRepository('AppBundle:Issue')
-            ->findOneBySlug($issue_slug);
-
-        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
-
         return $this->addOrEditIssue($request, $issue->getProject(), null, $issue);
     }
 
     /**
-     * @Route("/project/{project_slug}/issue/add", name="add_issue")
-     * @param $project_slug
+     * @Route("/project/{slug}/issue/add", name="add_issue")
+     * @Security("is_granted('add_issue', project)")
+     * @param Project $project
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addIssueAction($project_slug, Request $request)
+    public function addIssueAction(Project $project, Request $request)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $project = $this->getDoctrine()
-            ->getRepository('AppBundle:Project')
-            ->findOneBySlug($project_slug);
-
-        if (!$project instanceof Project) {
-            throw $this->createNotFoundException(
-                $this->get('translator')->trans("Project doesn't exists")
-            );
-        }
-
-        $this->denyAccessUnlessGranted('add_issue', $project);
-
         return $this->addOrEditIssue($request, $project);
     }
 
     /**
-     * @Route("/issue/{issue_slug}/add-subtask", name="add_sub_issue")
-     * @param $issue_slug
+     * @Route("/issue/{slug}/add-subtask", name="add_sub_issue")
+     * @Security("is_granted('add_issue', issue.getProject())")
+     * @param Issue $issue
      * @param Request $request
      * @return \stdClass
      */
-    public function addSubIssueAction($issue_slug, Request $request)
+    public function addSubIssueAction(Issue $issue, Request $request)
     {
-        $issue = $this->getCurrentIssue($issue_slug);
-
-        $this->denyAccessUnlessGranted('add_issue', $issue->getProject());
-
         return $this->addOrEditIssue($request, $issue->getProject(), $issue);
     }
 
     /**
-     * @Route("issue/{issue_slug}/comment/add-or-edit", name="add_or_edit_comment")
+     * @Route("issue/{slug}/comment/add-or-edit", name="add_or_edit_comment")
+     * @Security("is_granted('add_issue', issue.getProject())")
      * @param Request $request
-     * @param $issue_slug
+     * @param Issue $issue
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addOrEditCommentAction(Request $request, $issue_slug)
+    public function addOrEditCommentAction(Request $request, Issue $issue)
     {
-        $issue = $this->getCurrentIssue($issue_slug);
-
-        $this->denyAccessUnlessGranted('view', $issue->getProject());
-
         $comment = null;
         if (is_array($request->get('comment')) && !empty($request->get('comment')['id'])) {
             $comment = $this->findCommentById(
@@ -129,10 +107,10 @@ class IssueController extends Controller
             $em->persist($comment);
             $em->flush();
 
-            return $this->redirectToRoute('single_issue', array('issue_slug' => $issue->getSlug()));
+            return $this->redirectToRoute('single_issue', array('slug' => $issue->getSlug()));
         } else {
             $context = array();
-            $context['entity'] = $this->getCurrentIssue($issue_slug);
+            $context['entity'] = $issue;
             $context['commentForm'] = $form->createView();
 
             return $this->render(
@@ -143,16 +121,14 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("/comment/{comment_id}/delete", name="comment_delete")
-     * @param $comment_id
+     * @Route("/comment/{id}/delete", name="comment_delete")
+     * @Security("is_granted('delete', comment)")
+     * @param Comment $comment
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @internal param $comment_id
      */
-    public function deleteCommentAction($comment_id)
+    public function deleteCommentAction(Comment $comment)
     {
-        $comment = $this->findCommentById($comment_id);
-
-        $this->denyAccessUnlessGranted('delete', $comment);
-
         $em = $this->getDoctrine()->getManager();
         $em->remove($comment);
         $em->flush();
@@ -160,22 +136,9 @@ class IssueController extends Controller
         return $this->redirectToRoute(
             'single_issue',
             array(
-                'issue_slug' => $comment->getIssue()->getSlug()
+                'slug' => $comment->getIssue()->getSlug()
             )
         );
-    }
-
-    private function getCurrentIssue($issue_slug)
-    {
-        /** @noinspection PhpUndefinedMethodInspection */
-        /** @var Issue $issue */
-        $issue = $this->getDoctrine()
-            ->getRepository('AppBundle:Issue')
-            ->findOneBySlug($issue_slug);
-
-        $this->exitIfNotAllowedOrNotExistsIssue($issue);
-
-        return $issue;
     }
 
     /**
@@ -193,7 +156,7 @@ class IssueController extends Controller
             $comment,
             array(
                 'issue' => $issue->getId(),
-                'action' => $this->generateUrl('add_or_edit_comment', array('issue_slug' => $issue->getSlug())),
+                'action' => $this->generateUrl('add_or_edit_comment', array('slug' => $issue->getSlug())),
             )
         );
 
@@ -253,17 +216,6 @@ class IssueController extends Controller
             'AppBundle:issue:add-or-edit.html.twig',
             $context
         );
-    }
-
-    private function exitIfNotAllowedOrNotExistsIssue($issue)
-    {
-        if (!$issue instanceof Issue) {
-            throw $this->createNotFoundException(
-                $this->get('translator')->trans("Issue doesn't exists")
-            );
-        }
-
-        $this->denyAccessUnlessGranted('view', $issue->getProject());
     }
 
     /**
