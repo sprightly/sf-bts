@@ -32,3 +32,8 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
           - { name: form.type }
+    twig.extension.get_issue_blocks:
+        class: AppBundle\Twig\IssueBlocksExtension
+        arguments: ['@service_container']
+        tags:
+          - { name: twig.extension }

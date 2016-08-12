@@ -30,8 +30,7 @@ class IssueController extends Controller
                 $context['allowSubTaskAdding'] = true;
             }
         }
-
-        $this->prepareBlocksContext($context);
+        $context['commentForm'] = $this->createCommentForm($context['entity'])->createView();
 
         return $this->render(
             'AppBundle:issue:single.html.twig',
@@ -134,9 +133,7 @@ class IssueController extends Controller
         } else {
             $context = array();
             $context['entity'] = $this->getCurrentIssue($issue_slug);
-            $context['commentsBlock'] = new \stdClass();
-            $context['commentsBlock']->form = $form->createView();
-            $this->prepareBlocksContext($context);
+            $context['commentForm'] = $form->createView();
 
             return $this->render(
                 'AppBundle:issue:single.html.twig',
@@ -168,33 +165,6 @@ class IssueController extends Controller
         );
     }
 
-    private function generateActivityBlock($issue)
-    {
-        $activityBlock = new \stdClass();
-        $activityBlock->columns = array(
-            'date',
-            'type',
-            'user',
-        );
-        $activityBlock->blockTitle = $this->get('translator')->trans('Activity');
-        /** @noinspection PhpUndefinedMethodInspection */
-        $activityBlock->entities = $this->getDoctrine()
-            ->getRepository('AppBundle:IssueActivity')
-            ->findByIssue($issue);
-
-        return $activityBlock;
-    }
-
-    private function generateCollaboratorsBlock($issue)
-    {
-        $collaboratorsBlock = new \stdClass();
-        $collaboratorsBlock->blockTitle = $this->get('translator')->trans('Collaborators');
-        /** @noinspection PhpUndefinedMethodInspection */
-        $collaboratorsBlock->entities = $issue->getCollaborators();
-
-        return $collaboratorsBlock;
-    }
-
     private function getCurrentIssue($issue_slug)
     {
         /** @noinspection PhpUndefinedMethodInspection */
@@ -206,56 +176,6 @@ class IssueController extends Controller
         $this->exitIfNotAllowedOrNotExistsIssue($issue);
 
         return $issue;
-    }
-
-    /**
-     * @param array $context
-     * @param Issue $issue
-     */
-    private function maybePopulateStorySubtaskContext(&$context, $issue)
-    {
-        if ($issue::TYPE_SUBTASK == $issue->getType()) {
-            $context['parentTask'] = $issue->getParent();
-        } elseif ($issue::TYPE_STORY == $issue->getType()) {
-            $context['subTasksBlock']['blockTitle'] = $this->get('translator')->trans('Sub-task(s)');
-            /** @noinspection PhpUndefinedMethodInspection */
-            $context['subTasksBlock']['entities'] = $this->getDoctrine()
-                ->getRepository('AppBundle:Issue')
-                ->findByParent($issue);
-            $context['subTasksBlock']['columns'] = array(
-                'update',
-                'summary',
-                'project',
-                'priority',
-                'status',
-                'assignee',
-                'reporter',
-            );
-        }
-    }
-
-    /**
-     * @param array $context
-     * @return \stdClass
-     * @internal param Issue $issue
-     * @internal param \Symfony\Component\Form\Form $form
-     */
-    private function generateCommentsBlock(&$context)
-    {
-        if (!key_exists('commentsBlock', $context)) {
-            $context['commentsBlock'] = new \stdClass();
-        }
-        $context['commentsBlock']->blockTitle = $this->get('translator')->trans('Comments');
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $context['commentsBlock']->entities = $this->getDoctrine()
-            ->getRepository('AppBundle:Comment')
-            ->findByIssue($context['entity']);
-
-        if (!isset($context['commentsBlock']->form)) {
-            $form = $this->createCommentForm($context['entity']);
-            $context['commentsBlock']->form = $form->createView();
-        }
     }
 
     /**
@@ -278,17 +198,6 @@ class IssueController extends Controller
         );
 
         return $form;
-    }
-
-    /**
-     * @param array $context
-     */
-    private function prepareBlocksContext(&$context)
-    {
-        $context['activityBlock'] = $this->generateActivityBlock($context['entity']);
-        $context['collaboratorsBlock'] = $this->generateCollaboratorsBlock($context['entity']);
-        $this->generateCommentsBlock($context);
-        $this->maybePopulateStorySubtaskContext($context, $context['entity']);
     }
 
     private function addOrEditIssue(Request $request, Project $project, $parentIssue = null, $currentIssue = null)

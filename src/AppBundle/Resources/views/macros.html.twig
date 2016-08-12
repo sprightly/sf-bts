@@ -183,13 +183,13 @@
     </div>
 {% endmacro %}
 
-{% macro comments_block(context) %}
+{% macro comments_block(block, form) %}
     {% import _self as macros %}
     <div class="row block">
         <div class="page-header">
-            <h4>{{ context.blockTitle }}</h4>
+            <h4>{{ block.blockTitle }}</h4>
         </div>
-        {% for entity in context.entities %}
+        {% for entity in block.entities %}
             <div class="panel panel-default" data-id="{{ entity.id }}">
                 <div class="panel-body">
                     {{ entity.body }}
@@ -210,15 +210,15 @@
                 <p>{% trans %}Nothing here yet..{% endtrans %}</p>
             </div>
         {% endfor %}
-        {{ form_start(context.form) }}
-            {{ form_row(context.form.body) }}
+        {{ form_start(form) }}
+            {{ form_row(form.body) }}
             <div class="form-group">
-                {{ form_label(context.form.submit) }}
-                {{ form_widget(context.form.submit) }}
+                {{ form_label(form.submit) }}
+                {{ form_widget(form.submit) }}
                 <button class="cancel-edit btn-default btn">Cancel Edit</button>
             </div>
-            {{ form_rest(context.form) }}
-        {{ form_end(context.form) }}
+            {{ form_rest(form) }}
+        {{ form_end(form) }}
     </div>
 {% endmacro %}
 
