@@ -4,11 +4,6 @@ parameters:
 #    parameter_name: value
 
 services:
-    app_bundle.security_listener:
-        class: AppBundle\EventListener\SecurityListener
-        arguments: ['@service_container']
-        tags:
-          - { name: kernel.event_subscriber }
     app_bundle.project_voter:
         class: AppBundle\Security\ProjectVoter
         arguments: ['@security.access.decision_manager']
@@ -37,8 +32,3 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
           - { name: form.type }
-    twig.extension.date_time_time_zone:
-        class: AppBundle\Twig\DateTimeTimeZoneExtension
-        arguments: ['@service_container']
-        tags:
-          - { name: twig.extension }

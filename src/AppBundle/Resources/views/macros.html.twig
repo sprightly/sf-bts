@@ -36,7 +36,7 @@
                 {% set entityType = entity.type %}
                 <tr>
                     {% if not context.columns is defined or 'date' in context.columns %}
-                        <td>{{ entity.created|date_time_time_zone('Y.m.d h:i:s') }}</td>
+                        <td>{{ entity.created|date('Y.m.d h:i:s', app.user.timezone) }}</td>
                     {% endif %}
                     {% if not context.columns is defined or 'project' in context.columns %}
                         <td>{{ macros.project_anchor(entity.project) }}</td>
@@ -109,7 +109,7 @@
             {% for entity in context.entities %}
                 <tr>
                     {% if not context.columns is defined or 'update' in context.columns %}
-                        <td>{{ entity.updated|date_time_time_zone('Y.m.d h:i:s') }}</td>
+                        <td>{{ entity.updated|date('Y.m.d h:i:s', app.user.timezone) }}</td>
                     {% endif %}
                     {% if not context.columns is defined or 'summary' in context.columns %}
                         <td>{{ macros.issue_anchor(entity) }}</td>
@@ -201,7 +201,7 @@
                         <a href="{{ path('comment_delete', {comment_id: entity.id}) }}">{{ 'delete'|trans }}</a>
                         &nbsp;|&nbsp;
                     {% endif %}
-                    {{ entity.created|date_time_time_zone('Y.m.d h:m:s') }},
+                    {{ entity.created|date('Y.m.d h:m:s', app.user.timezone) }},
                     &nbsp;{{ macros.public_profile_anchor(entity.author.username) }}
                 </div>
             </div>

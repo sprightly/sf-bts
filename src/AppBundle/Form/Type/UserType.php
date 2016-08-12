@@ -15,6 +15,9 @@ class UserType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $timeZones = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, 'EC');
+        $timeZones = array_combine($timeZones, $timeZones);
+
         $builder
             ->add('email')
             ->add('username')
@@ -28,7 +31,15 @@ class UserType extends AbstractType
                     'label' => 'Password (leave empty if not needed to change)',
                 )
             )
-            ->add('timezone');
+            ->add(
+                'timezone',
+                ChoiceType::class,
+                array(
+                    'choices' => $timeZones,
+                    'choices_as_values' => true,
+                    'required' => true,
+                )
+            );
 
         if ($options['current_user_admin']) {
             $builder->add(

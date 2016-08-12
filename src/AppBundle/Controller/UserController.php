@@ -7,6 +7,7 @@ use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class UserController extends Controller
 {
@@ -38,6 +39,18 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
+
+            if ($user === $this->getUser()) {
+                $token = new UsernamePasswordToken(
+                    $user,
+                    null,
+                    'main',
+                    $user->getRoles()
+                );
+                $this->get('security.token_storage')->setToken($token);
+            }
+
+            return $this->redirect($request->getRequestUri());
         }
 
         return $this->render(

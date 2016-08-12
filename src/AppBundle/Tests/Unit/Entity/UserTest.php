@@ -16,7 +16,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->user->setPassword(password_hash('test', PASSWORD_BCRYPT));
         $this->user->setFullName('Operator Full Name');
         $this->user->setEmail('operator@example.com');
-        $this->user->setTimezone('America/Yellowknife');
+        $this->user->setTimezone('Pacific/Galapagos');
         $this->user->setRoles(array(User::USER_ROLE, User::OPERATOR_ROLE));
     }
 
