@@ -35,7 +35,6 @@
         {% if entity.resolution %}
             <span class="label label-default">{{ 'resolution'|trans }}:&nbsp;<span>{{ entity.resolution }}</span></span>
         {% endif %}
-        {% dump(blocks.commentsBlock) %}
         {{ macros.activity_block(blocks.activityBlock) }}
         {{ macros.users_block(blocks.collaboratorsBlock) }}
         {{ macros.comments_block(blocks.commentsBlock, commentForm) }}
